@@ -1,0 +1,7 @@
+{
+  "name": "recipebox",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
