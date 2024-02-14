@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-newrecipe',
@@ -26,16 +27,20 @@ export class NewrecipePage implements OnInit {
   }
 
   saveRecipe() {
-    this.http.post('http://localhost:5000/recipes', this.recipe)
+    this.http.post('http://127.0.0.1:5000/recipes/', this.recipe)
         .subscribe(response => {
             console.log('POST Response:', response);
+
+            // this.router.navigate(['/allrecipes']); // change later
         }, error => {
           console.error("POST error", error);
         });
-
       }
 
-
+  cancel() {
+    // this.router.navigate(['/home']); // maybe change later
   }
+
+}
 
 

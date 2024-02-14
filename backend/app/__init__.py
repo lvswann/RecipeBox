@@ -1,15 +1,16 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from config import Config
-
+from app.extensions import db, cors
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    db = SQLAlchemy(app)
-
-    from routes import recipe_routes, section_routes
+    # initialize flask extensions
+    db.init_app(app)
+    cors.init_app(app)
+    
+    from app.routes import recipe_routes, section_routes
 
     # register blueprints 
     app.register_blueprint(recipe_routes.bp)
