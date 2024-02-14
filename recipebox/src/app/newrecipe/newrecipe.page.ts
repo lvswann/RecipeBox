@@ -12,30 +12,28 @@ export class NewrecipePage implements OnInit {
     title: '',
     time: '',
     time_unit: '',
-    ingredients: '',
+    ingredient: '',
     amount: '',
     amount_unit: '',
     directions: '',
   };
 
   constructor(private http: HttpClient) { }
-
+  // constructor() { }
 
 
   ngOnInit() {
   }
 
   saveRecipe() {
-  }
+    this.http.post('http://localhost:5000/recipes', this.recipe)
+        .subscribe(response => {
+            console.log('POST Response:', response);
+        }, error => {
+          console.error("POST error", error);
+        });
 
-  //   this.http.post('http://localhost:5000/recipes', this.recipe)
-  //       .subscribe(response => {
-  //           console.log('POST Response:', response);
-  //       }, error => {
-  //         console.error("POST error", error);
-  //       });
-
-  //     }
+      }
 
 
   }

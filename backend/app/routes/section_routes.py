@@ -2,6 +2,6 @@ from flask import Blueprint
 
 bp = Blueprint('section', __name__)
 
-@bp.route('/sections', methods=['POST'])
+@bp.route('/sections/', methods=['POST'])
 def create_section():
-    return 'x'
+    return "<h1>this is sections</h1>"
