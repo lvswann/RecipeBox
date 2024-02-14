@@ -33,8 +33,6 @@ export class NewsectionPage implements OnInit {
     // this.router.navigate(['/home']); // maybe change later
   }
 
-}
-
 
   goHome(){
     this._router.navigate(['/home'])
