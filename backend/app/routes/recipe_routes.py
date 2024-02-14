@@ -1,4 +1,4 @@
-from flask import Blueprint, Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from app.extensions import db
 from app.models import Recipe
