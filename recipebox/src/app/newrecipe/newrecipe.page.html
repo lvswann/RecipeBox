@@ -18,41 +18,42 @@
     <ion-card-header>
       <ion-card-title>Add New Recipe</ion-card-title>
     </ion-card-header>
-  
+
     <ion-card-content>
       <ion-list>
         <ion-item>
-          <ion-input label="Title"></ion-input>
+          <ion-input type="text" [(ngModel)]="recipe.title" label="Title"></ion-input>
+
         </ion-item>
-      
+
         <ion-row>
           <ion-item>
-            <ion-input label="Time"></ion-input>
+            <ion-input type="text" [(ngModel)]="recipe.time" label="Time"></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-input label="Unit"></ion-input>
+            <ion-input type="text" [(ngModel)]="recipe.time_unit" label="Unit"></ion-input>
           </ion-item>
         </ion-row>
 
         <ion-row>
           <ion-item>
-            <ion-input label="Ingredient"></ion-input>
+            <ion-input type="text" [(ngModel)]="recipe.ingredient" label="Ingredient"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-input label="Amount"></ion-input>
+            <ion-input type="text" [(ngModel)]="recipe.amount" label="Amount"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-input label="Unit"></ion-input>
+            <ion-input type="text" [(ngModel)]="recipe.amount_unit" label="Unit"></ion-input>
           </ion-item>
         </ion-row>
 
         <ion-item lines="none">
           <ion-button>Add Ingredient</ion-button>
         </ion-item>
-      
+
         <ion-item>
-          <ion-input label="Directions" ></ion-input>
+          <ion-input type="text" [(ngModel)]="recipe.directions" label="Directions" ></ion-input>
         </ion-item>
 
         <ion-item lines="none">
@@ -72,11 +73,11 @@
       <br>
       <br>
 
-      <ion-button>Save</ion-button>
-      <ion-button>Cancel</ion-button>
-      
+      <ion-button (click)="saveRecipe()">Save</ion-button>
+      <ion-button (click)="cancel()">Cancel</ion-button>
+
     </ion-card-content>
   </ion-card>
-  
+
 
 </ion-content>

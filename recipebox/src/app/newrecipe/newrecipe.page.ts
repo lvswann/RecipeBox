@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-newrecipe',
@@ -8,10 +9,39 @@ import {Router} from '@angular/router';
 })
 export class NewrecipePage implements OnInit {
 
-  constructor(private _router: Router) { }
+  recipe = {
+    title: '',
+    time: '',
+    time_unit: '',
+    ingredient: '',
+    amount: '',
+    amount_unit: '',
+    directions: '',
+  };
+
+  constructor(private http: HttpClient, private _router: Router) { }
+
 
   ngOnInit() {
   }
+
+  saveRecipe() {
+    this.http.post('http://127.0.0.1:5000/recipes/', this.recipe)
+        .subscribe(response => {
+            console.log('POST Response:', response);
+
+            // this.router.navigate(['/allrecipes']); // change later
+        }, error => {
+          console.error("POST error", error);
+        });
+      }
+
+  cancel() {
+    // this.router.navigate(['/home']); // maybe change later
+  }
+
+}
+
 
   goHome(){
     this._router.navigate(['/home'])
