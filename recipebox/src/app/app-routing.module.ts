@@ -23,6 +23,14 @@ const routes: Routes = [
     path: 'singlerecipe',
     loadChildren: () => import('./singlerecipe/singlerecipe.module').then( m => m.SinglerecipePageModule)
   },
+  {
+    path: 'newsection',
+    loadChildren: () => import('./newsection/newsection.module').then( m => m.NewsectionPageModule)
+  },
+  {
+    path: 'singlesection',
+    loadChildren: () => import('./singlesection/singlesection.module').then( m => m.SinglesectionPageModule)
+  },
 ];
 
 @NgModule({
