@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button color="primary"></ion-menu-button>
     </ion-buttons>
-    <img alt="chicken" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />  
   </ion-toolbar>
 </ion-header>
 
@@ -21,7 +21,7 @@
   
     <ion-card-content>
       <ion-list>
-        <ion-item>
+        <ion-item button (click)="goRecipe()">
           <ion-thumbnail slot="start">
             <img alt="chicken" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
           </ion-thumbnail>

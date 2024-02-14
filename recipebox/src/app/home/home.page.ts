@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +8,25 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  constructor(private _router: Router) { }
+
+  ngOnInit() {
+  }
+
+  goHome(){
+    this._router.navigate(['/home'])
+  }
+
+  goRecipe() {
+    this._router.navigate(['/singlerecipe'])
+  }
+
+  goSection() {
+    this._router.navigate(['/singlesection'])
+  }
+
+  goNewSection(){
+    this._router.navigate(['/newsection'])
+  }
 
 }

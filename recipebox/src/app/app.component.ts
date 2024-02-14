@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -6,10 +7,15 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  public appPages = [
+    {title: 'All Recipes', url:'allrecipes', icon: 'list-outline'},
+    {title: "Add New Recipe", url:"newrecipe", icon: "add-outline"},
+    {title: "Add New Section", url:"newsection", icon: "add-outline"}
+  ];
 
-  appPages = [
-    {title: "All Recipes", url:"allrecipes", icon: "list-outline"},
-    {title: "Add New Recipe", url:"newrecipe", icon: "add-outline"}
-  ]
+  constructor(private _router: Router) { }
+
+  goHome(){
+    this._router.navigate(['/home'])
+  }
 }

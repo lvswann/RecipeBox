@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <img alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />  
   </ion-toolbar>
 </ion-header>
 
@@ -22,7 +22,7 @@
     
       <ion-card-content>
         <ion-row>
-        <ion-card>
+        <ion-card button (click)="goRecipe()">
           <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
           <ion-card-header>
             <ion-card-title>Recipe One</ion-card-title>
@@ -55,14 +55,14 @@
       <ion-card-content>
         <ion-row>
 
-          <ion-card>
+          <ion-card button (click)="goNewSection()">
             <ion-card-header>
               <ion-card-title>Add New Section</ion-card-title>
             </ion-card-header>
           
           </ion-card>
 
-          <ion-card>
+          <ion-card button (click)="goSection()">
             <img style="width:200px;height:128px;" src="https://t4.ftcdn.net/jpg/02/86/17/89/360_F_286178925_8zk89O9uC5JJVPvqhvBMUpaRxp8AFXzD.jpg" />
             <ion-card-header>
               <ion-card-title>Section One</ion-card-title>
@@ -72,7 +72,7 @@
               Short description of Section
 
               <ion-col>
-                <ion-card>
+                <ion-card button (click)="goRecipe()">
                   <ion-card-header>
                     <ion-card-title>Recipe One</ion-card-title>
                   </ion-card-header>

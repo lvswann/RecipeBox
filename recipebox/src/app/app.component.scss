@@ -1,6 +1,6 @@
 ion-menu {
     --ion-background-color: #ffffff;
-    --ion-text-color: #ffffff;
+    //--ion-text-color: #111111;
   
     ion-toolbar {
       --background: #ffffff;
@@ -8,5 +8,9 @@ ion-menu {
   
     ion-list {
       background: transparent;
+    }
+
+    ion-menu.ios ion-item ion-icon {
+      color: #111111;
     }
   }
