@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
+import { HttpClientModule } from '@angular/common/http';
 
 import { SinglerecipePageRoutingModule } from './singlerecipe-routing.module';
 
@@ -13,7 +14,8 @@ import { SinglerecipePage } from './singlerecipe.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    SinglerecipePageRoutingModule
+    SinglerecipePageRoutingModule,
+    HttpClientModule,
   ],
   declarations: [SinglerecipePage]
 })

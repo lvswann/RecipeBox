@@ -20,18 +20,19 @@ export class NewsectionPage implements OnInit {
 
   saveSection() {
     this.http.post('http://127.0.0.1:5000/sections/', this.section)
-        .subscribe(response => {
+        .subscribe({
+          next: (response) => {
             console.log('POST Response:', response);
+            // this.router.navigate(['/singlesection']); // change later
+          },
 
-            // this.router.navigate(['/home']); // change later
-        }, error => {
-          console.error("POST error", error);
-        });
-      }
+          error: (error) => {
+            console.error("POST error", error);
+          },
 
-  cancel() {
-    // this.router.navigate(['/home']); // maybe change later
-  }
+          complete: () => {},
+      });
+    }
 
 
   goHome(){

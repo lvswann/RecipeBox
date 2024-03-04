@@ -5,7 +5,6 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your_secret_key'
 
     # define the URI for connecting to the MariaDB database
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI') or \
-        'mysql+pymysql://root:fzbowers@localhost/recipe_boxdb'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:fbowers@localhost/recipebox_db'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
