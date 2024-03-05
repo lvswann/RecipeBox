@@ -13,8 +13,10 @@ with app.app_context():
     db.session.commit()
 
     # Create users
-    user1 = User(username='user1', email='user1@example.com')
-    user2 = User(username='user2', email='user2@example.com')
+    user1 = User(username='user1', email='user1@example.com', password='password', website='thiswebsite')
+    user2 = User(username='user2', email='user2@example.com', password='password', website='thiswebsite')
+    # user1 = User(username='user1', email='user1@example.com')
+    # user2 = User(username='user2', email='user2@example.com')
 
     # Create recipes for user1
     recipe1_user1 = Recipe(title='Recipe 1 for user1', time='30', time_unit='minutes',

@@ -36,6 +36,10 @@ const routes: Routes = [
     path: 'singlesection',
     loadChildren: () => import('./singlesection/singlesection.module').then( m => m.SinglesectionPageModule)
   },
+  {
+    path: 'login',
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+  },
 ];
 
 @NgModule({
