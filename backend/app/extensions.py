@@ -5,8 +5,9 @@ from flask_admin import Admin
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from flask_jwt_extended import JWTManager
 
-
+jwt = JWTManager()
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 cors = CORS()

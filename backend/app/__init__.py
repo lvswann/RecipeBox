@@ -1,6 +1,6 @@
 from flask import Flask
 from config import Config
-from .extensions import db, cors, admin, migrate, bcrypt, login_manager
+from .extensions import db, cors, admin, migrate, bcrypt, login_manager, jwt
 
 
 def create_app():
@@ -13,6 +13,7 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    jwt.init_app(app)
 
     from .routes import recipe_routes, section_routes, account_routes, auth_routes
     # from . import auth

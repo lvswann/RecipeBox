@@ -40,17 +40,25 @@ def register_user():
 @cross_origin()
 def login_user():
 
-    auth = request.authorization  
-    if not auth or not auth.username or not auth.password: 
-       return make_response('could not verify', 401, {'Authentication': 'login required"'})   
+    # auth = request.authorization  
+    # if not auth or not auth.username or not auth.password: 
+    #    return make_response('could not verify', 401, {'Authentication': 'login required"'})   
  
+    # print("Received data:", auth)
 
-    print("Received data:", auth)
-
-    user = User.query.filter_by(email=auth.email).first()  
-    if not user or not check_password_hash(user.password, auth.password):
-        return make_response('could not verify', 401, {'Authentication': 'login required'})
+    # user = User.query.filter_by(email=auth.email).first()  
+    # if not user or not check_password_hash(user.password, auth.password):
+    #     return make_response('could not verify', 401, {'Authentication': 'login required'})
     
+
+    data = request.json
+    print("Received data:", data)
+
+    user = user_authentication(data['email'], data['password'])
+
+    if not user:
+        return jsonify({'message': 'Login Failed'}), 401
+
     access_token = create_access_token(identity=user.public_id)
     return jsonify({'message': 'Login successful', 'access_token': access_token})
 
