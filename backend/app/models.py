@@ -3,6 +3,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
+
 section_recipe = db.Table('section_recipe',
                     db.Column('section_id', db.Integer, db.ForeignKey('section.id')),
                     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id')),
@@ -28,6 +29,9 @@ class User(UserMixin, db.Model):
         db.Integer,
         primary_key=True
     )
+
+    public_id = db.Column(db.String(40), unique=True)
+
     username = db.Column(
         db.String(100),
         nullable=False,
@@ -69,11 +73,11 @@ class User(UserMixin, db.Model):
 
     def set_password(self, password):
         """Create hashed password."""
-        self.password = bcrypt.generate_password_hash(password)
+        self.password = generate_password_hash(password, method='pbkdf2:sha256')
 
     def check_password(self, password):
         """Check hashed password."""
-        return bcrypt.check_password_hash(self.password, password)
+        return check_password_hash(self.password, password)
     
     def __repr__(self):
         return f'<User "{self.username}">'
