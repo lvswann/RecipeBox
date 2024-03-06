@@ -11,6 +11,7 @@ export class LoginPage implements OnInit {
 
   login = {
     username: '',
+    email: '',
     password: ''
   }
 
@@ -18,13 +19,31 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
   }
-  
-  saveRecipe() {
+
+  userRegister() {
+
+    this.http.post('http://127.0.0.1:5000/register/', this.login)
+        .subscribe({
+          next: (response) => {
+            console.log('POST Response:', response);
+            this._router.navigate(['/home'])
+          },
+
+          error: (error) => {
+            console.error("POST error", error);
+          },
+
+          complete: () => {},
+      });
+  }
+
+  userLogin() {
 
     this.http.post('http://127.0.0.1:5000/login/', this.login)
         .subscribe({
           next: (response) => {
             console.log('POST Response:', response);
+            this._router.navigate(['/home'])
           },
 
           error: (error) => {
@@ -40,3 +59,4 @@ export class LoginPage implements OnInit {
   }
 
 }
+

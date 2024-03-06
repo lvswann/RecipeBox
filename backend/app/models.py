@@ -45,12 +45,12 @@ class User(UserMixin, db.Model):
         unique=False,
         nullable=False
 	)
-    website = db.Column(
-        db.String(60),
-        index=False,
-        unique=False,
-        nullable=True
-	)
+    # website = db.Column(
+    #     db.String(60),
+    #     index=False,
+    #     unique=False,
+    #     nullable=True
+	# )
 #     # created_on = db.Column(
 #     #     db.DateTime,
 #     #     index=False,
@@ -69,14 +69,11 @@ class User(UserMixin, db.Model):
 
     def set_password(self, password):
         """Create hashed password."""
-        self.password = generate_password_hash(
-            password,
-            method='sha256'
-        )
+        self.password = bcrypt.generate_password_hash(password)
 
     def check_password(self, password):
         """Check hashed password."""
-        return check_password_hash(self.password, password)
+        return bcrypt.check_password_hash(self.password, password)
     
     def __repr__(self):
         return f'<User "{self.username}">'

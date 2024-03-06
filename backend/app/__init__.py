@@ -14,14 +14,15 @@ def create_app():
     bcrypt.init_app(app)
     login_manager.init_app(app)
 
-    from .routes import recipe_routes, section_routes, account_routes
-    from . import auth
+    from .routes import recipe_routes, section_routes, account_routes, auth_routes
+    # from . import auth
 
     # register blueprints 
     app.register_blueprint(recipe_routes.bp)
     app.register_blueprint(section_routes.bp)
     app.register_blueprint(account_routes.bp)
-    app.register_blueprint(auth.auth_bp)
+    app.register_blueprint(auth_routes.bp)
+    # app.register_blueprint(auth.auth_bp)
 
     with app.app_context():
         db.create_all()
