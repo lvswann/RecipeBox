@@ -6,6 +6,7 @@ import { HomePage } from './home.page';
 import { HttpClientModule } from '@angular/common/http';
 
 import { HomePageRoutingModule } from './home-routing.module';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { HomePageRoutingModule } from './home-routing.module';
     IonicModule,
     HomePageRoutingModule,
     HttpClientModule,
+    ScrollingModule,
   ],
   declarations: [HomePage]
 })

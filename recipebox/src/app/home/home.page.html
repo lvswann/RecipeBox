@@ -7,41 +7,87 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+<ion-content class="has-header" [fullscreen]="true">
+  <!-- <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">RecipeBox</ion-title>
     </ion-toolbar>
-  </ion-header>
+  </ion-header> -->
 
-  <div id="container">
+  <ion-content>
+
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Great recipes</ion-card-title>
+        <ion-card-title class="ion-text-center">Pinned recipes</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
         <ion-row>
-        <ion-card button (click)="goRecipe()">
+
+        <div class="scrolling-wrapper">
+
+        <ion-card class="card" button (click)="goRecipe()">
           <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
           <ion-card-header>
             <ion-card-title>Recipe One</ion-card-title>
           </ion-card-header>
 
         </ion-card>
-        <ion-card>
+        <ion-card class="card">
           <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
           <ion-card-header>
             <ion-card-title>Recipe Two</ion-card-title>
           </ion-card-header>
 
         </ion-card>
-        <ion-card>
+        <ion-card class="card">
           <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
           <ion-card-header>
             <ion-card-title>Recipe Three</ion-card-title>
           </ion-card-header>
         </ion-card>
+        <ion-card button (click)="goRecipe()" class="card">
+          <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
+          <ion-card-header>
+            <ion-card-title>Recipe One</ion-card-title>
+          </ion-card-header>
+
+        </ion-card>
+        <ion-card class="card">
+          <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
+          <ion-card-header>
+            <ion-card-title>Recipe Two</ion-card-title>
+          </ion-card-header>
+
+        </ion-card>
+        <ion-card class="card">
+          <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
+          <ion-card-header>
+            <ion-card-title>Recipe Three</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+        <ion-card class="card" button (click)="goRecipe()">
+          <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
+          <ion-card-header>
+            <ion-card-title>Recipe One</ion-card-title>
+          </ion-card-header>
+
+        </ion-card>
+        <ion-card class="card">
+          <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
+          <ion-card-header>
+            <ion-card-title>Recipe Two</ion-card-title>
+          </ion-card-header>
+
+        </ion-card>
+        <ion-card class="card">
+          <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
+          <ion-card-header>
+            <ion-card-title>Recipe Three</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+
+      </div>
       </ion-row>
 
       </ion-card-content>
@@ -49,20 +95,20 @@
 
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Sections</ion-card-title>
+        <ion-card-title class="ion-text-center">Sections</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
         <ion-row>
 
-          <ion-card button (click)="goNewSection()">
-            <ion-card-header>
-              <ion-card-title>Add New Section</ion-card-title>
-            </ion-card-header>
+          <ion-card button (click)="goNewSection()" class="ion-text-center">
+            <ion-card-content > Add New Section
+            </ion-card-content>
 
           </ion-card>
+          <div class="scrolling-wrapper"> 
 
-          <ion-card button (click)="goSection()">
+          <ion-card class="card" button (click)="goSection()">
             <img style="width:200px;height:128px;" src="https://t4.ftcdn.net/jpg/02/86/17/89/360_F_286178925_8zk89O9uC5JJVPvqhvBMUpaRxp8AFXzD.jpg" />
             <ion-card-header>
               <ion-card-title>Section One</ion-card-title>
@@ -102,7 +148,7 @@
               </ion-col>
             </ion-card-content>
           </ion-card>
-          <ion-card>
+          <ion-card class="card">
             <img style="width:200px;height:128px;" src="https://t4.ftcdn.net/jpg/02/86/17/89/360_F_286178925_8zk89O9uC5JJVPvqhvBMUpaRxp8AFXzD.jpg" />
             <ion-card-header>
               <ion-card-title>Section Two</ion-card-title>
@@ -116,25 +162,24 @@
                   <ion-card-header>
                     <ion-card-title>Recipe One</ion-card-title>
                   </ion-card-header>
-
                   <ion-card-content>
                     Recipe Description
                   </ion-card-content>
                 </ion-card>
+
                 <ion-card>
                   <ion-card-header>
                     <ion-card-title>Recipe Two</ion-card-title>
                   </ion-card-header>
-
                   <ion-card-content>
                     Recipe Description
                   </ion-card-content>
                 </ion-card>
+
                 <ion-card>
                   <ion-card-header>
                     <ion-card-title>Recipe Two</ion-card-title>
                   </ion-card-header>
-
                   <ion-card-content>
                     Recipe Description
                   </ion-card-content>
@@ -142,9 +187,10 @@
               </ion-col>
             </ion-card-content>
           </ion-card>
+        </div>
 
       </ion-row>
       </ion-card-content>
     </ion-card>
-  </div>
+ </ion-content>
 </ion-content>

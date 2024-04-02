@@ -25,3 +25,25 @@
 #container a {
   text-decoration: none;
 }
+
+.scrolling-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  // &::-webkit-scrollbar {
+  //   display: none;
+  // }
+
+  .card {
+    display: inline-block;
+  }
+}
+
+.vert-align{
+  display: flex!important;
+  align-content: center!important;
+  align-items: center!important;
+  vertical-align: middle;
+}
+
+

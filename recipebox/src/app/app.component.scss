@@ -14,3 +14,9 @@ ion-menu {
       color: #111111;
     }
   }
+
+  .photo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
