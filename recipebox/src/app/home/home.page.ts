@@ -4,16 +4,24 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 
 
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+
 })
-export class HomePage implements OnInit {
+
+export class HomePage {
   sections: any[];
   recipes: any[];
 
 
+  public appPages = [
+    {title: 'All Recipes', url:'allrecipes', icon: 'list-outline'},
+    {title: "Add New Recipe", url:"newrecipe", icon: "add-outline"},
+    {title: "Add New Section", url:"newsection", icon: "add-outline"}
+  ];
 
   constructor(
     private http: HttpClient,

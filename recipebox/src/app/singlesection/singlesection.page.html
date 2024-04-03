@@ -4,6 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -14,15 +15,23 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-card *ngIf="section">
+  <ion-card color="secondary" *ngIf="section">
     <!-- <img side="start" style="width:200px;height:128px;" src="https://t4.ftcdn.net/jpg/02/86/17/89/360_F_286178925_8zk89O9uC5JJVPvqhvBMUpaRxp8AFXzD.jpg" /> -->
 
-    <ion-card-header>
-      <ion-card-title>{{ section.title }}</ion-card-title>
-      <ion-card-subtitle>{{ section.description }}</ion-card-subtitle>
+    <ion-card-header class="header" color="primary">
+      <ion-card-title class="ion-text-center">{{ section.title }}</ion-card-title>
+      <ion-card-subtitle class="ion-text-center">{{ section.description }}</ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
+      <ion-card>
+        <ion-card-header>
+        <ion-card-title> Section Description </ion-card-title>
+      </ion-card-header>
+      </ion-card>
+    <!-- </ion-card-content>
+
+    <ion-card-content> -->
 
       <ion-row>
         <ion-card button (click)="goRecipe()">

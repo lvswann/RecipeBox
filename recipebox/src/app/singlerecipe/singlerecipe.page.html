@@ -4,6 +4,7 @@
       <ion-menu-button color="primary"></ion-menu-button>
     </ion-buttons>
     <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -15,30 +16,46 @@
   </ion-header>
 
   <ion-card *ngIf="recipe">
-    <ion-card-header>
-      <ion-card-title>{{ recipe.title }}</ion-card-title>
-      <ion-card-subtitle>{{ recipe.time }} {{ recipe.time_unit }}</ion-card-subtitle>
+    <ion-card-header class="header" color="primary">
+      <ion-card-title style="font-size: 25px">{{ recipe.title }}</ion-card-title>
+      <ion-card-title class="ion-text-right">{{ recipe.time }} {{ recipe.time_unit }}</ion-card-title>
+      <!-- <ion-card-subtitle>Recipe Description</ion-card-subtitle> -->
     </ion-card-header>
 
     <ion-card-content>
+      <!-- <ion-card class="card">
+        <ion-card-header>
+        <ion-card-title> Recipe Description </ion-card-title>
+      </ion-card-header>
+      </ion-card> -->
+
       <ion-row>
-        <ion-col>
-          <ion-list [inset]="true" lines="inset">
-            <ion-item *ngFor="let ingredient of recipe.ingredients">
-            <ion-label>{{ ingredient.name }}</ion-label>
-            <ion-label>{{ ingredient.amount }}</ion-label>
-            <ion-label>{{ ingredient.amount_unit }}</ion-label>
-          </ion-item>
+        <ion-col class="ingredients">
+          <ion-title class="ion-text-center title" color="primary">Ingredients</ion-title>
+          <ion-list [inset]="true" lines="none">
+            <ion-item class="ion-text-center" *ngFor="let ingredient of recipe.ingredients">
+              <ion-label>{{ ingredient.name }}</ion-label>
+              <ion-label>{{ ingredient.amount }}</ion-label>
+              <ion-label>{{ ingredient.amount_unit }}</ion-label>
+            </ion-item>
           </ion-list>
         </ion-col>
         <ion-col>
+          <ion-title class="ion-text-center title" color="primary">Directions</ion-title>
           <ion-list [inset]="true" lines="inset">
-            <ion-item *ngFor="let direction of recipe.directions">
+            <ion-item class="ion-text-center" *ngFor="let direction of recipe.directions">
               <ion-label>{{ direction.description }}</ion-label>
             </ion-item>
           </ion-list>
         </ion-col>
       </ion-row>
+
+      <br>
+
+      <ion-button color="warning">Edit</ion-button>
+      <ion-button>Pin</ion-button>
+      <ion-button >Delete</ion-button>
+
     </ion-card-content>
   </ion-card>
 

@@ -1,26 +1,35 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
+
+input {
+  caret-color: var(--ion-color-primary); 
+}
+
 /** Ionic CSS Variables **/
 :root {
 
-  // --ion-background-color: #F9EFDB;
-  --ion-background-color: #ffffff;
-  --ion-background-color-rgb: 249,239,219;
+
+  --ion-font-family: "Libre Franklin", sans-serif;
+
+   --ion-background-color: #E2E9E9;
+  //--ion-background-color: #ffffff;
+  --ion-background-color-rgb: 226,233,233;
 
   --ion-toolbar-background: #ffffff;
   --ion-item-background: #ffffff;
 
+
   /** primary **/
-  --ion-color-primary: #606C5D;
-  --ion-color-primary-rgb: 96, 108, 93;
+  --ion-color-primary: #7F917A;
+  --ion-color-primary-rgb: 207, 217, 204;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
   --ion-color-primary-shade: #3171e0;
   --ion-color-primary-tint: #4c8dff;
 
   /** secondary **/
-  --ion-color-secondary: #F7E6C4;
+  --ion-color-secondary: #CFD9CC;
   --ion-color-secondary-rgb: 225,244,244;
   --ion-color-secondary-contrast: #ffffff;
   --ion-color-secondary-contrast-rgb: 255, 255, 255;
@@ -36,7 +45,7 @@
   --ion-color-tertiary-tint: #6370ff;
 
   /** success **/
-  --ion-color-success: #2dd36f;
+  --ion-color-success: #000000;
   --ion-color-success-rgb: 45, 211, 111;
   --ion-color-success-contrast: #ffffff;
   --ion-color-success-contrast-rgb: 255, 255, 255;
@@ -44,10 +53,10 @@
   --ion-color-success-tint: #42d77d;
 
   /** warning **/
-  --ion-color-warning: #ffc409;
-  --ion-color-warning-rgb: 255, 196, 9;
-  --ion-color-warning-contrast: #000000;
-  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning: #938F98;
+  --ion-color-warning-rgb: 267, 4, 58;
+  --ion-color-warning-contrast:  #ffffff;
+  --ion-color-warning-contrast-rgb: 255, 255, 255;
   --ion-color-warning-shade: #e0ac08;
   --ion-color-warning-tint: #ffca22;
 
@@ -243,6 +252,7 @@
     --ion-card-background: #1e1e1e;
   }
 }
+
 
 html {
   /* 
