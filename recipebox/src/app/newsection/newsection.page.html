@@ -4,6 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -15,8 +16,8 @@
   </ion-header>
 
   <ion-card>
-    <ion-card-header>
-      <ion-card-title>Add New Section</ion-card-title>
+    <ion-card-header class="header"  color="primary">
+      <ion-card-title class="ion-text-center">Add New Section</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>

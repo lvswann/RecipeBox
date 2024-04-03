@@ -4,6 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -16,12 +17,12 @@
 
   <ion-content>
 
-    <ion-card>
-      <ion-card-header>
+    <ion-card color="secondary">
+      <ion-card-header class="header" color="primary">
         <ion-card-title class="ion-text-center">Pinned recipes</ion-card-title>
       </ion-card-header>
 
-      <ion-card-content>
+      <ion-card-content >
         <ion-row>
 
         <div class="scrolling-wrapper">
@@ -93,8 +94,8 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-card>
-      <ion-card-header>
+    <ion-card color="secondary">
+      <ion-card-header class="header"  color="primary">
         <ion-card-title class="ion-text-center">Sections</ion-card-title>
       </ion-card-header>
 
@@ -108,15 +109,20 @@
           </ion-card>
           <div class="scrolling-wrapper"> 
 
-          <ion-card class="card" button (click)="goSection()">
-            <img style="width:200px;height:128px;" src="https://t4.ftcdn.net/jpg/02/86/17/89/360_F_286178925_8zk89O9uC5JJVPvqhvBMUpaRxp8AFXzD.jpg" />
-            <ion-card-header>
-              <ion-card-title>Section One</ion-card-title>
-            </ion-card-header>
+          <ion-card class="card" (click)="goSection()">
+            <!-- <div button (click)="goSection()" class="description"> -->
+              <img style="width:100%;height:128px;" src="https://t4.ftcdn.net/jpg/02/86/17/89/360_F_286178925_8zk89O9uC5JJVPvqhvBMUpaRxp8AFXzD.jpg" />
+              <ion-card-header>
+                <ion-card-title>Section One</ion-card-title>
+              </ion-card-header>
 
-            <ion-card-content>
-              Short description of Section
+              <ion-card-content>
+                Short description of Section
+              <!-- </ion-card-content>
+            </div>
 
+
+            <ion-card-content class="button-margin"> -->
               <ion-col>
                 <ion-card button (click)="goRecipe()">
                   <ion-card-header>
