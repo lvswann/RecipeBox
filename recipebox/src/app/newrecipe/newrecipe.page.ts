@@ -17,6 +17,7 @@ export class NewrecipePage implements OnInit {
     title: ['', [Validators.required]],
     time: ['', Validators.required],
     time_unit: ['', Validators.required],
+    pinned: [false],
     ingredients: this.formBuilder.array([
       this.createIngredientFormGroup()
     ]),
@@ -43,6 +44,9 @@ export class NewrecipePage implements OnInit {
     this.loadSections();
   }
 
+  updatePinned(event: CustomEvent) {
+    this.recipeForm.controls['pinned'].setValue(event.detail.checked);
+  }
 
   updateSectionIds(event: CustomEvent) {
     const selected_ids = event.detail.value as number[];

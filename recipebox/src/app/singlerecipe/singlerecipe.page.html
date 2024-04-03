@@ -57,7 +57,7 @@
       <br>
 
       <ion-button color="warning">Edit</ion-button>
-      <ion-button>Pin</ion-button>
+      <ion-button button (click)="updatePin()">{{ recipe.pinned ? 'Unpin' : 'Pin' }}</ion-button>
       <ion-button >Delete</ion-button>
 
     </ion-card-content>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 
@@ -12,9 +12,9 @@ import { AuthService } from '../auth/auth.service';
 
 })
 
-export class HomePage {
+export class HomePage implements OnInit {
   sections: any[];
-  recipes: any[];
+  pinned_recipes: any[];
 
 
   public appPages = [
@@ -29,7 +29,7 @@ export class HomePage {
     private authService: AuthService
     ) {
     this.sections = [];
-    this.recipes = [];
+    this.pinned_recipes = [];
   }
 
   ngOnInit() {
@@ -67,7 +67,6 @@ export class HomePage {
   }
 
   loadPinnedRecipes() {
-    // For now, get all recipes
     console.log('Loading recipes...');
 
     this.authService.userInfo$.subscribe(user => {
@@ -79,11 +78,13 @@ export class HomePage {
           'Authorization': `Bearer ${token}`
         };
 
-        this.http.get<any>('http://127.0.0.1:5000/recipes/', { headers })
+        this.http.get<any>('http://127.0.0.1:5000/recipes/?pinned=true', { headers })
           .subscribe({
             next: (response) => {
               console.log('Recipes response:', response);
-              this.recipes = response.recipes;
+
+              // get only pinned recipes
+              this.pinned_recipes = response.recipes;
             },
             error: (error) => {
               console.error('Error getting recipes:', error);
