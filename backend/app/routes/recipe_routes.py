@@ -58,6 +58,12 @@ def create_recipe():
         )
         new_recipe.directions.append(new_direction)
 
+    # get sections
+    section_ids = data['section_ids']
+    for section_id in section_ids:
+        section = Section.query.filter_by(id=section_id, user_id=db_user.id).first()
+        if section:
+            new_recipe.sections.append(section)
 
     # save to database
     db.session.add(new_recipe)

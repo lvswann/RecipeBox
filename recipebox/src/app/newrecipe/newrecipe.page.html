@@ -68,6 +68,15 @@
 
           </div>
 
+          <div formGroupName="section_checkbox">
+            <ion-item>
+              <ion-label position="floating">Sections</ion-label>
+              <ion-select formControlName="section_ids" multiple="true" (ionChange)="updateSectionIds($event)">
+                <ion-select-option *ngFor="let section of sections" [value]="section.id">{{ section.title }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+
         </ion-list>
 
         <!-- maybe -->

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./newrecipe.page.scss'],
 })
 export class NewrecipePage implements OnInit {
+  sections: any[];
 
   recipeForm: FormGroup = this.formBuilder.group({
     title: ['', [Validators.required]],
@@ -21,7 +22,8 @@ export class NewrecipePage implements OnInit {
     ]),
     directions: this.formBuilder.array([
       this.createDirectionFormGroup()
-    ])
+    ]),
+    section_ids: [[]]
   });
 
 
@@ -30,10 +32,22 @@ export class NewrecipePage implements OnInit {
     private http: HttpClient,
     public formBuilder: FormBuilder,
     private authService: AuthService,
-    ) { }
+    ) {
+      this.sections = [];
+
+    }
 
 
-  ngOnInit() { }
+
+  ngOnInit() {
+    this.loadSections();
+  }
+
+
+  updateSectionIds(event: CustomEvent) {
+    const selected_ids = event.detail.value as number[];
+    this.recipeForm.controls['section_ids'].setValue(selected_ids);
+  }
 
 
   createIngredientFormGroup(): FormGroup {
@@ -127,4 +141,34 @@ export class NewrecipePage implements OnInit {
     return this.recipeForm.get('directions') as FormArray;
   }
 
+
+
+  loadSections() {
+    console.log('Loading sections...');
+
+    this.authService.userInfo$.subscribe(user => {
+      if (user && user.sub) {
+        const token = user.sub
+
+        const headers = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        };
+
+        this.http.get<any>('http://127.0.0.1:5000/sections/', { headers })
+          .subscribe({
+            next: (response) => {
+              console.log('Sections response:', response);
+              this.sections = response.sections;
+
+            },
+            error: (error) => {
+              console.error('Error getting sections:', error);
+              // alert('Getting all sections failed');
+            },
+            complete: () => {},
+          });
+      }
+    });
+  }
 }
