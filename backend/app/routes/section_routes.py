@@ -133,3 +133,29 @@ def get_section(section_id):
         return jsonify({'error': 'Section not found'}), 404
 
     return jsonify({'section': serialized_section}), 200
+
+
+
+@bp.route('/sections/<int:section_id>/', methods=['DELETE'])
+@cross_origin()
+@jwt_required()
+def delete_section(section_id):
+    user_public_id = get_jwt_identity()
+
+    user = User.query.filter_by(public_id=user_public_id).first()
+
+    # Check if the user exists
+    if user:
+        # Retrieve the section associated with the user and section ID
+        section = Section.query.filter_by(user=user, id=section_id).first()
+    else:
+        return jsonify({'error': 'Cannot find user in database'}), 401
+    
+    if not section:
+        return jsonify({'error': 'Section not found'}), 404
+
+    # Delete section from db
+    db.session.delete(section)
+    db.session.commit()
+
+    return jsonify({'message': 'Section deleted successfully'}), 200

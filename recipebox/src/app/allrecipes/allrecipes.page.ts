@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 
@@ -20,7 +20,16 @@ export class AllrecipesPage implements OnInit {
   }
 
   ngOnInit() {
-    this.loadRecipes();
+
+    // maybe use different implementation
+    // load recipes everytime navigated to page
+    this._router.events.subscribe(event => {
+      // Check if it's a NavigationEnd event
+      if (event instanceof NavigationEnd) {
+        // reload recipes
+        this.loadRecipes();
+      }
+    });
   }
 
 

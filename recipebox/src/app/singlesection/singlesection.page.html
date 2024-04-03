@@ -34,27 +34,16 @@
     <ion-card-content> -->
 
       <ion-row>
-        <ion-card button (click)="goRecipe()">
-          <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
+        <ion-card *ngFor="let recipe of recipes" button (click)="goToRecipe(recipe.id)">
           <ion-card-header>
-            <ion-card-title>Recipe One</ion-card-title>
-          </ion-card-header>
-
-        </ion-card>
-        <ion-card>
-          <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
-          <ion-card-header>
-            <ion-card-title>Recipe Two</ion-card-title>
-          </ion-card-header>
-
-        </ion-card>
-        <ion-card>
-          <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
-          <ion-card-header>
-            <ion-card-title>Recipe Three</ion-card-title>
+            <ion-card-title>{{ recipe.title }}</ion-card-title>
           </ion-card-header>
         </ion-card>
       </ion-row>
+
+      <ion-button color="warning">Edit</ion-button>
+      <ion-button button (click)="deleteSection()">Delete</ion-button>
+
 
     </ion-card-content>
   </ion-card>

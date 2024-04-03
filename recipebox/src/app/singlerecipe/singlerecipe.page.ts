@@ -39,6 +39,42 @@ export class SinglerecipePage implements OnInit {
     })
   }
 
+  editRecipe() {
+
+  }
+
+  deleteRecipe() {
+    this.http.delete<any>(`http://127.0.0.1:5000/recipes/${this.recipe.id}/`)
+    .subscribe({
+      next: (response) => {
+        console.log('Recipe deleted successfully');
+        this.goHome()
+      },
+      error: (error) => {
+        console.error('Recipe deletion unsuccessful:', error);
+        // alert('Failed to delete recipe');
+        },
+      complete: () => {}
+    })
+  }
+
+  updatePin() {
+    this.recipe.pinned = !this.recipe.pinned
+
+    this.http.post<any>('http://127.0.0.1:5000/recipes/pin/', { id: this.recipe.id, pinned: this.recipe.pinned })
+    .subscribe({
+      next: (response) => {
+        console.log('Recipe pin updated');
+      },
+      error: (error) => {
+        console.error('Error updating recipe pin:', error);
+        // alert('Failed to update recipe pin');
+        },
+      complete: () => {}
+    })
+
+  }
+
   goHome(){
     this._router.navigate(['/home'])
   }

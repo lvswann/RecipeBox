@@ -27,7 +27,7 @@
         <ion-row>
           <div class="scrolling-wrapper">
 
-            <ion-card  *ngFor="let recipe of recipes" button (click)="goToRecipe(recipe.id)">
+            <ion-card class="card" *ngFor="let recipe of pinned_recipes" button (click)="goToRecipe(recipe.id)">
               <ion-card-header>
                 <ion-card-title>{{ recipe.title }}</ion-card-title>
               </ion-card-header>
@@ -63,7 +63,7 @@
               </ion-card-header>
 
               <ion-card-content>{{ section.description }}</ion-card-content>
-              
+
             </ion-card>
           </div>
 

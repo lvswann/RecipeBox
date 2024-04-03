@@ -15,6 +15,7 @@ def create_recipe():
     # Get current user's public ID from JWT token
     user_public_id = get_jwt_identity()
 
+    # Maybe not needed??
     # Decode and verify the JWT access token
     try:
         token = request.headers.get('authorization').split(' ')[1]
@@ -38,8 +39,9 @@ def create_recipe():
         title=data['title'],
         time=data['time'],
         time_unit=data['time_unit'],
+        pinned=data['pinned'],
         user = db_user,
-        user_id = db_user.id
+        user_id = db_user.id,
     )
 
     # create ingredients and associate them with new recipe
@@ -58,6 +60,12 @@ def create_recipe():
         )
         new_recipe.directions.append(new_direction)
 
+    # get sections
+    section_ids = data['section_ids']
+    for section_id in section_ids:
+        section = Section.query.filter_by(id=section_id, user_id=db_user.id).first()
+        if section:
+            new_recipe.sections.append(section)
 
     # save to database
     db.session.add(new_recipe)
@@ -70,6 +78,10 @@ def create_recipe():
 @cross_origin()
 @jwt_required()
 def get_recipes():
+    # get query params
+    pinned = request.args.get('pinned')
+
+
     # Get current user's public ID from JWT token
     user_public_id = get_jwt_identity()
 
@@ -89,8 +101,12 @@ def get_recipes():
 
     # Check if the user exists
     if user:
-        # Retrieve recipes associated with the user
-        user_recipes = Recipe.query.filter_by(user=user).all()
+        if pinned == 'true':
+            # retrieve pinned recipes associated with the user
+            user_recipes = Recipe.query.filter_by(user=user, pinned=True).all()
+        else:
+            # Retrieve recipes associated with the user
+            user_recipes = Recipe.query.filter_by(user=user).all()
     else:
         return jsonify({'error': 'Cannot find user in database'}), 401
 
@@ -103,6 +119,7 @@ def get_recipes():
             'title': recipe.title,
             'time': recipe.time,
             'time_unit': recipe.time_unit,
+            'pinned': recipe.pinned,
             'ingredients': [],
             'directions': []
         }
@@ -163,6 +180,7 @@ def get_recipe(recipe_id):
             'title': recipe.title,
             'time': recipe.time,
             'time_unit': recipe.time_unit,
+            'pinned': recipe.pinned,
             'ingredients': [],
             'directions': []
         }
@@ -184,3 +202,54 @@ def get_recipe(recipe_id):
         return jsonify({'error': 'Recipe not found'}), 404
 
     return jsonify({'recipe': serialized_recipe}), 200
+
+
+@bp.route('/recipes/<int:recipe_id>/', methods=['DELETE'])
+@cross_origin()
+@jwt_required()
+def delete_recipe(recipe_id):
+    user_public_id = get_jwt_identity()
+
+    user = User.query.filter_by(public_id=user_public_id).first()
+
+    # Check if the user exists
+    if user:
+        # Retrieve the recipe associated with the user and recipe ID
+        recipe = Recipe.query.filter_by(user=user, id=recipe_id).first()
+    else:
+        return jsonify({'error': 'Cannot find user in database'}), 401
+    
+    if not recipe:
+        return jsonify({'error': 'Recipe not found'}), 404
+
+    # Delete recipe from db
+    db.session.delete(recipe)
+    db.session.commit()
+
+    return jsonify({'message': 'Recipe deleted successfully'}), 200
+
+
+
+
+## EDITING RECIPES   
+@bp.route('/recipes/pin/', methods=['POST'])
+@cross_origin()
+@jwt_required()
+def pin_recipe():
+    # code for confirming user
+
+
+    data = request.json
+    recipe_id = data['id']
+    pinned = data['pinned']
+
+    # Get the recipe from the database
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe:
+        return jsonify({'error': 'Recipe not found'}), 404
+
+    # Update pin
+    recipe.pinned = pinned
+    db.session.commit()
+
+    return jsonify({'message': 'Recipe pin updated', 'pinned': pinned}), 200

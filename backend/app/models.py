@@ -37,6 +37,7 @@ class Recipe(db.Model):
     title = db.Column(db.String(150), nullable=False)
     time = db.Column(db.String(150), nullable=False)
     time_unit = db.Column(db.String(150), nullable=False)
+    pinned = db.Column(db.Boolean, default=False)
 
     ingredients = db.relationship('Ingredient', back_populates='recipe', cascade="all, delete")
     directions = db.relationship('Direction', back_populates='recipe', cascade="all, delete")
