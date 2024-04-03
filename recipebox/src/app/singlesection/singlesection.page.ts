@@ -52,6 +52,8 @@ export class SinglesectionPage implements OnInit {
 
   }
 
+  
+
   deleteSection() {
     this.http.delete<any>(`http://127.0.0.1:5000/sections/${this.section.id}/`)
     .subscribe({

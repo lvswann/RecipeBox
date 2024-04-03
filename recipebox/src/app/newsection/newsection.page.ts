@@ -70,7 +70,9 @@ export class NewsectionPage implements OnInit {
     });
   }
 
-
+  goToAccount() {
+    this._router.navigate(['/useraccount'])
+  }
 
   goHome(){
     this._router.navigate(['/home'])
