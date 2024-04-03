@@ -44,7 +44,18 @@ export class SinglerecipePage implements OnInit {
   }
 
   deleteRecipe() {
-
+    this.http.delete<any>(`http://127.0.0.1:5000/recipes/${this.recipe.id}/`)
+    .subscribe({
+      next: (response) => {
+        console.log('Recipe deleted successfully');
+        this.goHome()
+      },
+      error: (error) => {
+        console.error('Recipe deletion unsuccessful:', error);
+        // alert('Failed to delete recipe');
+        },
+      complete: () => {}
+    })
   }
 
   updatePin() {

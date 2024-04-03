@@ -11,7 +11,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class SinglesectionPage implements OnInit {
   section: any;
-  recipes: any[]
+  recipes: any[];
 
   constructor(
     private http: HttpClient,
@@ -22,13 +22,13 @@ export class SinglesectionPage implements OnInit {
     this.recipes = [];
   }
 
+
   ngOnInit() {
     this.route.params.subscribe(params => {
       const section_id = params['id'];
       this.loadSection(section_id);
+      this.loadRecipes();
     })
-
-    this.loadRecipes();
   }
 
   loadSection(section_id: string) {
@@ -46,6 +46,25 @@ export class SinglesectionPage implements OnInit {
       complete: () => {}
     })
 
+  }
+
+  editSection() {
+
+  }
+
+  deleteSection() {
+    this.http.delete<any>(`http://127.0.0.1:5000/sections/${this.section.id}/`)
+    .subscribe({
+      next: (response) => {
+        console.log('Section deleted successfully');
+        this.goHome()
+      },
+      error: (error) => {
+        console.error('Section deletion unsuccessful:', error);
+        // alert('Failed to delete section');
+        },
+      complete: () => {}
+    })
   }
 
 
@@ -89,5 +108,5 @@ export class SinglesectionPage implements OnInit {
   goToRecipe(recipe_id: string) {
     this._router.navigate(['/recipe', recipe_id])
   }
-  
+
 }

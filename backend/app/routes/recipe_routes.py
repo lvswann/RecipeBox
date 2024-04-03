@@ -15,6 +15,7 @@ def create_recipe():
     # Get current user's public ID from JWT token
     user_public_id = get_jwt_identity()
 
+    # Maybe not needed??
     # Decode and verify the JWT access token
     try:
         token = request.headers.get('authorization').split(' ')[1]
@@ -203,11 +204,34 @@ def get_recipe(recipe_id):
     return jsonify({'recipe': serialized_recipe}), 200
 
 
+@bp.route('/recipes/<int:recipe_id>/', methods=['DELETE'])
+@cross_origin()
+@jwt_required()
+def delete_recipe(recipe_id):
+    user_public_id = get_jwt_identity()
+
+    user = User.query.filter_by(public_id=user_public_id).first()
+
+    # Check if the user exists
+    if user:
+        # Retrieve the recipe associated with the user and recipe ID
+        recipe = Recipe.query.filter_by(user=user, id=recipe_id).first()
+    else:
+        return jsonify({'error': 'Cannot find user in database'}), 401
+    
+    if not recipe:
+        return jsonify({'error': 'Recipe not found'}), 404
+
+    # Delete recipe from db
+    db.session.delete(recipe)
+    db.session.commit()
+
+    return jsonify({'message': 'Recipe deleted successfully'}), 200
 
 
 
 
-## EDITING FUNCTIONS
+## EDITING RECIPES   
 @bp.route('/recipes/pin/', methods=['POST'])
 @cross_origin()
 @jwt_required()
