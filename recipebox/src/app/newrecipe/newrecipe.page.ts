@@ -95,6 +95,9 @@ export class NewrecipePage implements OnInit {
     this._router.navigate(['/home'])
   }
 
+  goToAccount() {
+    this._router.navigate(['/useraccount'])
+  }
 
 
   // Functions for html form

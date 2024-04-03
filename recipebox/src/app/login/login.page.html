@@ -3,7 +3,7 @@
     <!-- <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons> -->
-    <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <img class="logo-margin" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
   </ion-toolbar>
 </ion-header>
 
@@ -16,14 +16,15 @@
 
   <!-- Login/Register Card -->
   <ion-card>
-    <ion-card-header class="header"  color="primary">
+    <ion-card-header class="header" color="primary">
       <ion-card-title class="ion-text-center">{{ isLogin ? 'User Login' : 'User Registration' }}</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
       <form [formGroup]="loginForm" (ngSubmit)="isLogin ? login() : register()">
         <ion-list>
-          <ion-item>
+          <ion-item *ngIf="!isLogin">
+          <!-- <ion-item> -->
             <ion-label position="floating">Username</ion-label>
             <ion-input formControlName="username" type="text"></ion-input>
           </ion-item>

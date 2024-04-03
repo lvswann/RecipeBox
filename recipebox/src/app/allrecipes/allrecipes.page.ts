@@ -53,7 +53,9 @@ export class AllrecipesPage implements OnInit {
   }
 
 
-
+  goToAccount() {
+    this._router.navigate(['/useraccount'])
+  }
 
   goToRecipe(recipe_id: string) {
     this._router.navigate(['/recipe', recipe_id])

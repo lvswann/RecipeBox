@@ -11,7 +11,7 @@ import { AuthService } from '../auth/auth.service';
 export class LoginPage implements OnInit {
 
   loginForm = this.formBuilder.group({
-    username: ['', [Validators.required]],
+    username: [''],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
   });

@@ -40,6 +40,11 @@ export class SinglesectionPage implements OnInit {
     })
 
   }
+
+  goToAccount() {
+    this._router.navigate(['/useraccount'])
+  }
+
   goHome(){
     this._router.navigate(['/home'])
   }

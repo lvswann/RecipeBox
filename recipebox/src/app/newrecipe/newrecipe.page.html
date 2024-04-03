@@ -3,8 +3,9 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <img button class="logo-margin" (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
     <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
+    <ion-button style="float: right; vertical-align: middle;" button (click)="goToAccount()">Account</ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -30,13 +31,17 @@
           </ion-item>
 
           <ion-item>
-            <ion-label position="floating">Time</ion-label>
+            <ion-input labelPlacement="floating" label="Time" formControlName="time" type="text"></ion-input>
+            <ion-input labelPlacement="floating" label="Time Unit" formControlName="time_unit" type="text"></ion-input>
+
+
+            <!-- <ion-label position="floating">Time</ion-label>
             <ion-input formControlName="time" type="text"></ion-input>
           </ion-item>
 
           <ion-item>
             <ion-label position="floating">Time Unit</ion-label>
-            <ion-input formControlName="time_unit" type="text"></ion-input>
+            <ion-input formControlName="time_unit" type="text"></ion-input> -->
           </ion-item>
 
 
@@ -45,9 +50,9 @@
           <!-- Ingredients -->
           <div formArrayName="ingredients">
             <ion-item *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
-              <ion-input label="Ingredient" formControlName="name" type="text"></ion-input>
-              <ion-input label="Amount" formControlName="amount" type="text"></ion-input>
-              <ion-input label="Unit" formControlName="amount_unit" type="text"></ion-input>
+              <ion-input labelPlacement="floating" label="Ingredient" formControlName="name" type="text"></ion-input>
+              <ion-input labelPlacement="floating" label="Amount" formControlName="amount" type="text"></ion-input>
+              <ion-input labelPlacement="floating" label="Unit" formControlName="amount_unit" type="text"></ion-input>
 
               <ion-button (click)="removeIngredient(i)" style="font-size: 25px" fill="clear">-</ion-button>
 
@@ -59,7 +64,7 @@
           <!-- Directions-->
           <div formArrayName="directions">
             <ion-item *ngFor="let direction of directionsArray.controls; let i = index" [formGroupName]="i">
-              <ion-input label="Description" formControlName="description" type="text"></ion-input>
+              <ion-input labelPlacement="floating"  label="Description" formControlName="description" type="text"></ion-input>
 
               <ion-button (click)="removeDirection(i)" style="font-size: 25px" fill="clear">-</ion-button>
 
