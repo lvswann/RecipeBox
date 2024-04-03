@@ -63,4 +63,8 @@ export class AllrecipesPage implements OnInit {
     this._router.navigate(['/home'])
   }
 
+  goRecipe() {
+    this._router.navigate(['/singlerecipe'])
+  }
+
 }

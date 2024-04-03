@@ -55,6 +55,8 @@ export class NewsectionPage implements OnInit {
             this.sectionForm.reset()
             // alert("Successful new_section POST")
             // Redirect to single section page or any other page
+
+            // change to go straight to section page
             this._router.navigate(['/home'])
           },
           error: (error) => {

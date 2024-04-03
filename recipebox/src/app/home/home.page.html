@@ -49,46 +49,49 @@
           <ion-card button (click)="goNewSection()" class="ion-text-center">
             <ion-card-content > Add New Section
             </ion-card-content>
-
           </ion-card>
+
           <div class="scrolling-wrapper">
 
-          <ion-card class="card" *ngFor="let section of sections" button (click)="goToSection(section.id)">
-            <ion-card-header>
-              <ion-card-title>{{ section.title }}</ion-card-title>
-            </ion-card-header>
+            <ion-card class="card" *ngFor="let section of sections" button (click)="goToSection(section.id)">
+              <ion-card-header>
+                <ion-card-title>{{ section.title }}</ion-card-title>
+              </ion-card-header>
 
-            <ion-card-content>{{ section.description }}
-              <!-- </ion-card-content>
-            </div>
+              <ion-card-content>{{ section.description }}</ion-card-content>
+              
+            </ion-card>
+          </div>
+
+<!--
+              <ion-card-content class="button-margin">
+                <ion-col>
+                  <ion-card button (click)="goRecipe()">
+                    <ion-card-header>
+                      <ion-card-title>Recipe One</ion-card-title>
+                    </ion-card-header>
+
+                    <ion-card-content>
+                      Recipe Description
+                    </ion-card-content>
+                  </ion-card>
+                  <ion-card>
+                    <ion-card-header>
+                      <ion-card-title>Recipe Two</ion-card-title>
+                    </ion-card-header>
+
+                    <ion-card-content>
+                      Recipe Description
+                    </ion-card-content>
+                  </ion-card>
+                  <ion-card>
+                    <ion-card-header>
+                      <ion-card-title>Recipe Two</ion-card-title>
+                    </ion-card-header>
+
+            </ion-card> -->
 
 
-            <ion-card-content class="button-margin"> -->
-              <ion-col>
-                <ion-card button (click)="goRecipe()">
-                  <ion-card-header>
-                    <ion-card-title>Recipe One</ion-card-title>
-                  </ion-card-header>
-
-                  <ion-card-content>
-                    Recipe Description
-                  </ion-card-content>
-                </ion-card>
-                <ion-card>
-                  <ion-card-header>
-                    <ion-card-title>Recipe Two</ion-card-title>
-                  </ion-card-header>
-
-                  <ion-card-content>
-                    Recipe Description
-                  </ion-card-content>
-                </ion-card>
-                <ion-card>
-                  <ion-card-header>
-                    <ion-card-title>Recipe Two</ion-card-title>
-                  </ion-card-header>
-
-          </ion-card>
         </ion-row>
 
         <ion-button button (click)="logout()" expand="block">Logout</ion-button>

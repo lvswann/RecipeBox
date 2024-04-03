@@ -126,6 +126,8 @@ export class HomePage {
 
   goNewSection(){
     this._router.navigate(['/newsection'])
+
+    // sometimes does not work
     this.loadSections();
   }
 
