@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-singlesection',
@@ -7,12 +9,37 @@ import {Router} from '@angular/router';
   styleUrls: ['./singlesection.page.scss'],
 })
 export class SinglesectionPage implements OnInit {
+  section: any;
 
-  constructor(private _router: Router) { }
+  constructor(
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private _router: Router
+  ) { }
 
   ngOnInit() {
+    this.route.params.subscribe(params => {
+      const section_id = params['id'];
+      this.loadSection(section_id);
+    })
   }
 
+  loadSection(section_id: string) {
+
+    this.http.get<any>(`http://127.0.0.1:5000/sections/${section_id}/`)
+    .subscribe({
+      next: (response) => {
+        console.log('Section:', response.section);
+        this.section = response.section;
+      },
+      error: (error) => {
+        console.error('Error getting section details:', error);
+        // alert('Failed to fetch section details');
+        },
+      complete: () => {}
+    })
+
+  }
   goHome(){
     this._router.navigate(['/home'])
   }

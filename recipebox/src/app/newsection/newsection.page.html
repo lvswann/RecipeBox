@@ -10,7 +10,7 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">newsection</ion-title>
+      <ion-title size="large">New Section</ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -19,23 +19,29 @@
       <ion-card-title>Add New Section</ion-card-title>
     </ion-card-header>
 
-    <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-input type="text" [(ngModel)]="section.title" label="Title"></ion-input>
-        </ion-item>
 
+    <ion-card-content>
+      <form [formGroup]="sectionForm" (ngSubmit)="saveSection()">
+        <ion-list>
           <ion-item>
-            <ion-input type="text" [(ngModel)]="section.description" label="Description"></ion-input>
+            <ion-label position="floating">Title</ion-label>
+            <ion-input formControlName="title" type="text"></ion-input>
           </ion-item>
 
-      </ion-list>
+          <ion-item>
+            <ion-label position="floating">Description</ion-label>
+            <ion-input formControlName="description" type="text"></ion-input>
+          </ion-item>
 
-      <br>
+        </ion-list>
 
-      <ion-button (click)="saveSection()">Save</ion-button>
-      <ion-button (click)="goHome()">Cancel</ion-button>
+        
+        <!-- maybe -->
+        <br>
 
+        <ion-button type="submit" expand="block">Save</ion-button>
+        <ion-button (click)="goHome()" expand="block">Cancel</ion-button>
+      </form>
     </ion-card-content>
   </ion-card>
 </ion-content>

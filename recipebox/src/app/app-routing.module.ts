@@ -1,44 +1,47 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
-  },
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
+    canActivate:[AuthGuard]
   },
   {
     path: 'newrecipe',
-    loadChildren: () => import('./newrecipe/newrecipe.module').then( m => m.NewrecipePageModule)
+    loadChildren: () => import('./newrecipe/newrecipe.module').then( m => m.NewrecipePageModule),
+    canActivate:[AuthGuard]
   },
   {
     path: 'allrecipes',
-    loadChildren: () => import('./allrecipes/allrecipes.module').then( m => m.AllrecipesPageModule)
+    loadChildren: () => import('./allrecipes/allrecipes.module').then( m => m.AllrecipesPageModule),
+    canActivate:[AuthGuard]
   },
   {
     path: 'recipe/:id',
-    loadChildren: () => import('./singlerecipe/singlerecipe.module').then( m => m.SinglerecipePageModule)
+    loadChildren: () => import('./singlerecipe/singlerecipe.module').then( m => m.SinglerecipePageModule),
+    canActivate:[AuthGuard]
   },
   {
     path: 'newsection',
-    loadChildren: () => import('./newsection/newsection.module').then( m => m.NewsectionPageModule)
+    loadChildren: () => import('./newsection/newsection.module').then( m => m.NewsectionPageModule),
+    canActivate:[AuthGuard]
   },
   {
-    path: 'singlesection',
-    loadChildren: () => import('./singlesection/singlesection.module').then( m => m.SinglesectionPageModule)
+    path: 'section/:id',
+    loadChildren: () => import('./singlesection/singlesection.module').then( m => m.SinglesectionPageModule),
+    canActivate:[AuthGuard]
   },
   {
     path: 'login',
-    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule),
+    canActivate:[AuthGuard]
   },
 ];
 

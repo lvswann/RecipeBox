@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
-import { StorageService } from '../auth/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -12,77 +10,72 @@ import { StorageService } from '../auth/storage.service';
 })
 export class LoginPage implements OnInit {
 
-  login = {
-    username: '',
-    email: '',
-    password: ''
-  }
+  loginForm = this.formBuilder.group({
+    username: ['', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]],
+  });
+  isLogin: boolean = true;
 
-  constructor(private http: HttpClient, private _router: Router, public formBuilder: FormBuilder,
-    private authenticationService:AuthService,
-    private storageService:StorageService,) { }
 
-  // public loginForm: any;
-  // errorMsg:string=""
-  // isSubmitted = false;
+  constructor(
+    private _router: Router,
+    public formBuilder: FormBuilder,
+    private authService: AuthService,
+    ) { }
 
   ngOnInit() {
-    // this.loginForm = this.formBuilder.group({ 
-    //   mobile: new FormControl('', Validators.compose([
-    //     Validators.required,
-    //     Validators.minLength(10),
-    //     Validators.maxLength(10), 
-    //   ])),  
-
-    //   password: new FormControl('', Validators.compose([        
-    //     Validators.required,
-    //     ])),
-    //   termsconditions: new FormControl(true,Validators.requiredTrue),
-
-    //   error:new FormControl('')
-    // });
   }
 
-  userRegister() {
-
-    this.http.post('http://127.0.0.1:5000/register/', this.login)
-        .subscribe({
-          next: (response) => {
-            console.log('POST Response:', response);
-            this._router.navigate(['/home'])
-          },
-
-          error: (error) => {
-            console.error("POST error", error);
-          },
-
-          complete: () => {},
-      });
-
-    //  this.authenticationService.registerUser(this.login);    
-
- 
-  }
-
-  userLogin() {
-
-    // this.http.post('http://127.0.0.1:5000/login/', this.login)
-    //     .subscribe({
-    //       next: (response) => {
-    //         console.log('POST Response:', response);
-    //         this._router.navigate(['/home'])
-    //       },
-
-    //       error: (error) => {
-    //         console.error("POST error", error);
-    //       },
-
-    //       complete: () => {},
-    //   });
-
-    this.authenticationService.login(this.login);   
-    // this._router.navigate(['/home'])
+  login(): void {
+    if (this.loginForm.invalid) {
+      console.log('loginForm is invalid');
+      return;
     }
+
+    // or this.loginForm
+    this.authService.loginUser(this.loginForm.value).subscribe({
+      next: (response) => {
+        // alert('Login Successful');
+        this._router.navigate(['/home'])
+      },
+      error: (error) => {
+        console.error('Login Failed:', error);
+        // alert('Login Failed: ' + error.message); // Display detailed error message
+      },
+      complete: () => {},
+    });
+  }
+
+  register(): void {
+    if (this.loginForm.invalid) return;
+
+    // or this.loginForm
+    this.authService.registerUser(this.loginForm.value).subscribe({
+      next: (response) => {
+        console.log('Registration Successful');
+        // alert('Registration Successful');
+
+        // login user
+        this.authService.loginUser(this.loginForm.value).subscribe({
+          next: () => {
+            this._router.navigate(['/home']);
+          },
+          error: () => {
+            console.error('Login Failed');
+
+            // alert('Login Failed');
+          }
+        });
+      },
+      error: (error) => {
+        console.log('Registration Failed');
+        // alert('Registration Failed');
+      },
+      complete: () => {},
+    });
+  }
+
 
   goHome(){
     this._router.navigate(['/home'])

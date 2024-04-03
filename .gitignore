@@ -1,3 +1,4 @@
 .venv
 /home/lswann/RecipeBox/backend/config.py
 config.py
+.backend/config.py

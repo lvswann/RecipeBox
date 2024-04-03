@@ -3,25 +3,25 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />  
+    <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">singlesection</ion-title>
+      <ion-title size="large">Single Section</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <ion-card>
+  <ion-card *ngIf="section">
     <!-- <img side="start" style="width:200px;height:128px;" src="https://t4.ftcdn.net/jpg/02/86/17/89/360_F_286178925_8zk89O9uC5JJVPvqhvBMUpaRxp8AFXzD.jpg" /> -->
 
     <ion-card-header>
-      <ion-card-title>Section Name</ion-card-title>
-      <ion-card-subtitle>Section Description</ion-card-subtitle>
+      <ion-card-title>{{ section.title }}</ion-card-title>
+      <ion-card-subtitle>{{ section.description }}</ion-card-subtitle>
     </ion-card-header>
-  
+
     <ion-card-content>
 
       <ion-row>
@@ -30,14 +30,14 @@
           <ion-card-header>
             <ion-card-title>Recipe One</ion-card-title>
           </ion-card-header>
-        
+
         </ion-card>
         <ion-card>
           <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
           <ion-card-header>
             <ion-card-title>Recipe Two</ion-card-title>
           </ion-card-header>
-        
+
         </ion-card>
         <ion-card>
           <img alt="chicken" style="width:200px;height:128px;" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />

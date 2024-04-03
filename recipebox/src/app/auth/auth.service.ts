@@ -1,251 +1,158 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from  '@angular/common/http';
-import { tap } from  'rxjs/operators';
-import { Observable, BehaviorSubject } from  'rxjs';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable, from, of, throwError } from "rxjs";
+import { map, catchError } from "rxjs/operators";
+import { JwtHelperService } from "@auth0/angular-jwt";
 
-import { Storage } from  '@ionic/storage';
-import { User } from  './user';
-import { AuthResponse } from  './auth-response';
-
-import{StorageService} from './storage.service'
-import { CapacitorHttp, HttpResponse } from '@capacitor/core';
-import { Router } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
-
+import { HttpClient } from '@angular/common/http';
+import { Storage } from '@ionic/storage-angular';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
-export class AuthService {
 
-  public isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-	token = '';
-  public isValidToken=false
+export class AuthService {
+  // used to store the decrypted user information from the access token
+  private userInfoSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+
+  // observable for components to subscribe to user information changes
+  public userInfo$: Observable<any> = this.userInfoSubject.asObservable();
+
+  // JwtHelperService instance for decoding JWT tokens
+  private jwtHelper: JwtHelperService = new JwtHelperService();
 
 
   constructor(
-    private http: HttpClient, private _router: Router,
-    private storageService:StorageService, 
-    private router:Router
-    ) 
-    {
-           
-    }
-
-  async isAuthenticatedUser()
-    {
-      const token=await this.storageService.get("token");  
-      if(!token) 
-      return false;
-      
-      var isExpired=this.isTokenExpired(token);  
-      if (isExpired) {
-        return false;
-      } else {
-        return true;
-      } 
-    }
-    private isTokenExpired(token: any) {
-      const decodedToken= jwtDecode(token);    
-      var expiry=decodedToken['exp'];
-      if (typeof expiry === "undefined") { expiry = 0}
-      var isExpired= (Math.floor((new Date).getTime() / 1000)) >= expiry;
-      return isExpired;
-    }
-    
-  async registerUser(formData: any)
-  {
+    private storage: Storage,
+    private http: HttpClient,
+  ) {
+    this.loadUserInfo();
+  }
 
 
-      if(!formData) return;
 
-      // const options = {
-      //   url: 'http://localhost:5000/api/user/register', 
-      //   headers: { 'Content-Type': 'application/json'  },       
-      //   data: JSON.stringify(formData),
-      // };
-    
-      // try{
-      //   const response: HttpResponse = await CapacitorHttp.post(options);        
-      //   return response.data; 
-      // }
-      // catch(e)
-      // {
-      //   return;
-      // }     
+  private async loadUserInfo(): Promise<void> {
+    console.log('Loading user info...');
+    await this.storage.create(); // Ensure that Storage database is created
 
-      this.http.post('http://127.0.0.1:5000/register/', formData)
-      .subscribe({
-        next: (response) => {
-          console.log('POST Response:', response);
-
-          // if(response && response.token)
-          // {
-          //     this.storageService.set("token",response.token);
-          //     this.isAuthenticated.next(true);
-          //     this._router.navigate(['/home'])
-          //     return;
-          //   } 
-          //   else
-          //   return "Invalid Credentials";     
-            
-          // }
-          // catch(e)
-          // {
-          //   return;
-          // }    
-
-        },
-
-        error: (error) => {
-          console.error("POST error", error);
-        },
-
-        complete: () => {},
+    this.getAccessToken().subscribe(token => {
+      console.log('Token:', token); // Log the retrieved token
+      if (token) {
+        const decodedUser = this.jwtHelper.decodeToken(token);
+        console.log('Decoded User:', decodedUser); // Log the decoded user information
+        this.userInfoSubject.next(decodedUser);
+      }
     });
   }
 
- public response:any;
+  public getAccessToken(): Observable<string | null> {
+    console.log('getAcessToken: ', from(this.storage.get("access_token")));
+    return from(this.storage.get("access_token"));
+  }
 
-  async login(formData: any)
-  {
-    
-      if(!formData) return;
-
-      this.http.post('http://127.0.0.1:5000/login/', formData, {responseType: 'json'})
-      .subscribe(responseData => {    
-        this.response = responseData;
-
-        console.log('POST Response:', this.response);
-
-        if(this.response && this.response.access_token)
-          {
-              this.storageService.set("token",this.response.token);
-              this.isAuthenticated.next(true);
-              this._router.navigate(['/home'])
-
-              
-              this.checkAuthentication()
-
-              console.log(this.isAuthenticated);
-
-              return;
-            } 
-            else
-            console.log('Not good?');
+  public async isStorageEmpty(): Promise<boolean> {
+    const accessToken = await this.storage.get('access_token');
+    return !accessToken; // Returns true if accessToken is null or undefined
+  }
 
 
-            return "Invalid Credentials";
+  public registerUser(userData: any): Observable<any> {
+    console.log('Im in auth.service.ts registerUser function');
+    this.storage.remove('access_token');
 
-      }, (error: any) => {
-        console.log(" Error from http post"+error)
+    this.isStorageEmpty().then(isEmpty => {
+      console.log('isStorageEmpty: ', isEmpty);
     });
 
-      
-
-      // this.http.post('http://127.0.0.1:5000/login/', formData)
-      // .subscribe({
-        // next: (response) => {
-        //   console.log('POST Response:', response);
-
-        //   if(response && response.access_token)
-        //   {
-        //       this.storageService.set("token",response.token);
-        //       this.isAuthenticated.next(true);
-        //       this._router.navigate(['/home'])
-        //       return;
-        //     } 
-        //     else
-        //     return "Invalid Credentials";     
-            
-
-        // },
-
-
-
-      // const options = {
-      //   url: 'http://localhost:5000/api/user/login', 
-      //   headers: { 'Content-Type': 'application/json'  },       
-      //   ,
-      // };
-
-  //     error: (error) => {
-  //       console.error("POST error", error);
-  //     },
-
-  //     complete: () => {},
-  // });
-
-    
-      // try{
-      //   const response: HttpResponse = await CapacitorHttp.post(options);
-      //   const res=response.data
-      //   if(res && res.token)
-      //   {
-      //       this.storageService.set("token",res.token);
-      //       this.isAuthenticated.next(true);
-      //       this.router.navigateByUrl('/profile', { replaceUrl: true });
-      //       return;
-      //     } 
-      //   else
-      //   return "Invalid Credentials";     
-        
-      // }
-      // catch(e)
-      // {
-      //   return;
-      // }     
-  }
-  async logout() {
-		this.isAuthenticated.next(false);
-		await this.storageService.remove("token");
-    this.router.navigateByUrl('/login', { replaceUrl: true });
-	}  
- 
-
-  public async checkAuthentication(){
-
-    const token=await this.storageService.get("token"); 
-    if(!token)  return false;    
-
-    var isExpired=this.isTokenExpired(token);
-    console.log("isExpired  " +isExpired)
-    if (isExpired) return false;
-    
-    var isValidToken=false;  
-    isValidToken=await this.validateToken(token);
-    console.log("isValidToken" +isValidToken)
-       
-    if(!isValidToken)
-      return false;      
-    else
-      return true;      
-
+    return this.http.post<any>('http://127.0.0.1:5000/users/', userData).pipe(
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
   }
 
-  async validateToken(token:any)
-  {
-    const options = {
-      url: 'http://localhost:5000/api/verify', 
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': token // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" 
-        }  
-    };
-  
-    try{
-      const response: HttpResponse = await CapacitorHttp.post(options);
-      const res=response.data      
-      if(res)
-        return true;
-      else
-        return false;    
-    }
-    catch(e)
-    {
-      return false;
-    }     
+
+  public loginUser(credentials: any): Observable<any> {
+    console.log('Im in auth.service.ts loginUser function');
+
+    return this.http.post<any>('http://127.0.0.1:5000/auth/login/', credentials).pipe(
+      map(response => {
+        console.log('Token:', response.access_token);
+        if (response && response.access_token) {
+          console.log('In response && response.access_token');
+          console.log("this is access_token new: ", response.access_token);
+
+          // Store the access token
+          this.storage.set('access_token', response.access_token).then(() => {
+            console.log('Token stored successfully:', response.access_token);
+
+            // Retrieve the stored token and log it
+            this.storage.get('access_token').then((storedToken) => {
+              console.log('Retrieved token from storage:', storedToken);
+            }).catch(error => {
+              console.error('Error retrieving stored token:', error);
+            });
+          }).catch(error => {
+            console.error('Error storing token:', error);
+          });
+
+          const decodedUser = this.jwtHelper.decodeToken(response.access_token);
+          this.userInfoSubject.next(decodedUser);
+        }
+        return response;
+      }),
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
   }
 
+
+ // Refresh access token
+  public refreshToken(): Observable<any> {
+    return this.http.post<any>('http://127.0.0.1:5000/auth/refresh/', {}).pipe(
+      map(response => {
+        console.log('Refreshed Token:', response.access_token);
+        if (response && response.access_token) {
+          console.log('In response && response.access_token');
+          console.log("this is refreshed_access_token: ", response.access_token);
+
+          // Store the refreshed access token
+          this.storage.set('access_token', response.access_token).then(() => {
+            console.log('Refreshed token stored successfully:', response.access_token);
+
+            // Retrieve the stored token and log it
+            this.storage.get('access_token').then((storedToken) => {
+              console.log('Retrieved refreshed token from storage:', storedToken);
+              const decodedUser = this.jwtHelper.decodeToken(storedToken);
+              this.userInfoSubject.next(decodedUser);
+            }).catch(error => {
+              console.error('Error retrieving stored token:', error);
+            });
+          }).catch(error => {
+            console.error('Error storing refreshed token:', error);
+          });
+
+        }
+        return response;
+      }),
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
+  }
+
+
+  // Logout user and remove access token
+  public logout(): Observable<any> {
+    return this.http.post<any>('http://127.0.0.1:5000/auth/logout/', {}).pipe(
+      map(() => {
+        this.storage.remove('access_token');
+        this.userInfoSubject.next(null);
+      }),
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
+  }
 
 }

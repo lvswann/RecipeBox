@@ -1,44 +1,135 @@
 from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from ..extensions import db
-from ..models import Section
+from ..models import User, Section
+from flask_jwt_extended import jwt_required, get_jwt_identity, decode_token
 
 bp = Blueprint('section', __name__)
 
 @bp.route('/sections/', methods=['POST'])
 @cross_origin()
+@jwt_required()
 def create_section():
-   
-    data = request.json
 
+    
+    # Get current user's public ID from JWT token
+    user_public_id = get_jwt_identity()
+
+    # Decode and verify the JWT access token
+    try:
+        token = request.headers.get('authorization').split(' ')[1]
+        decoded_token = decode_token(token)
+        requested_public_id = decoded_token['sub']
+    except Exception as e:
+        return jsonify({'error': 'Failed to decode token'}), 400
+
+    # Check if the user's public ID matches the requested public ID
+    if user_public_id != requested_public_id:
+        return jsonify({'error': 'Unauthorized access'}), 401
+
+    db_user = User.query.filter_by(public_id=user_public_id).first()
+
+
+    data = request.json
     print("Received data:", data)
 
     new_section = Section(
-        user_id=data['user_id'],
         title=data['title'],
         description=data['description'],
+        user = db_user,
+        user_id = db_user.id
     )
 
     # save to database
     db.session.add(new_section)
     db.session.commit()
 
-    return jsonify({'message': 'Data received', 'data': data})
+    return jsonify({'message': 'Section was saved', 'data': data})
 
 
 @bp.route('/sections/', methods=['GET'])
 @cross_origin()
-def get_section():
-    sections = Section.query.all()
+@jwt_required()
+def get_sections():
+
+    # Get current user's public ID from JWT token
+    user_public_id = get_jwt_identity()
+
+    # Decode and verify the JWT access token
+    try:
+        token = request.headers.get('authorization').split(' ')[1]
+        decoded_token = decode_token(token)
+        requested_public_id = decoded_token['sub']
+    except Exception as e:
+        return jsonify({'error': 'Failed to decode token'}), 400
+
+    # Check if the user's public ID matches the requested public ID
+    if user_public_id != requested_public_id:
+        return jsonify({'error': 'Unauthorized access'}), 401
+
+    user = User.query.filter_by(public_id=user_public_id).first()
+
+    # Check if the user exists
+    if user:
+        # Retrieve sections associated with the user
+        user_sections = Section.query.filter_by(user=user).all()
+    else:
+        return jsonify({'error': 'Cannot find user in database'}), 401
+
+
     serialized_sections = []
 
-    for section in sections:
+    for section in user_sections:
         serialized_section = {
             'id': section.id,
             'title': section.title,
-            'time': section.description,
+            'description': section.description,
         }
-
+        
         serialized_sections.append(serialized_section)
 
-    return jsonify(sections=serialized_sections)
+    return jsonify({'sections': serialized_sections}), 200
+
+
+@bp.route('/sections/<int:section_id>/', methods=['GET'])
+@cross_origin()
+@jwt_required()
+def get_section(section_id):
+    # Get current user's public ID from JWT token
+    user_public_id = get_jwt_identity()
+
+    # Decode and verify the JWT access token
+    try:
+        token = request.headers.get('authorization').split(' ')[1]
+        decoded_token = decode_token(token)
+        requested_public_id = decoded_token['sub']
+    except Exception as e:
+        return jsonify({'error': 'Failed to decode token'}), 400
+
+    # Check if the user's public ID matches the requested public ID
+    if user_public_id != requested_public_id:
+        return jsonify({'error': 'Unauthorized access'}), 401
+
+    user = User.query.filter_by(public_id=user_public_id).first()
+
+    # Check if the user exists
+    if user:
+        # Retrieve the section associated with the user and section ID
+        section = Section.query.filter_by(user=user, id=section_id).first()
+    else:
+        return jsonify({'error': 'Cannot find user in database'}), 401
+    
+
+    # Check if section exists
+    if section:
+        # Serialize recipe details
+        serialized_section = {
+            'id': section.id,
+            'title': section.title,
+            'description': section.description,
+        }
+
+    else:
+        return jsonify({'error': 'Section not found'}), 404
+
+    return jsonify({'section': serialized_section}), 200

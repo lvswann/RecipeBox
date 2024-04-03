@@ -1,46 +1,8 @@
-<!-- <ion-header [translucent]="true">
-
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Login</ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <ion-list>
-          <ion-item>
-            <ion-input type="text" [(ngModel)]="login.username" label="Username"></ion-input>
-
-          </ion-item>
-
-          <ion-item>
-            <ion-input type="text" [(ngModel)]="login.password" label="Password" type="password"></ion-input>
-          </ion-item>
-
-
-        </ion-list>
-
-          <ion-card-content text-center margin-top>
-          <button ion-button margin-right (click)="userLogin()"> Log In </button>
-          </ion-card-content>
-
-      </ion-card-content>
-
-    </ion-card>
-
-  </ion-header>
-</ion-content>
- -->
-
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <!-- <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
-    </ion-buttons>
+    </ion-buttons> -->
     <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
   </ion-toolbar>
 </ion-header>
@@ -48,37 +10,43 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">newsection</ion-title>
+      <ion-title size="large">Login</ion-title>
     </ion-toolbar>
   </ion-header>
 
+  <!-- Login/Register Card -->
   <ion-card>
     <ion-card-header>
-      <ion-card-title>User Login</ion-card-title>
+      <ion-card-title>{{ isLogin ? 'User Login' : 'User Registration' }}</ion-card-title>
     </ion-card-header>
 
-      <ion-card-content>
+    <ion-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="isLogin ? login() : register()">
         <ion-list>
           <ion-item>
-            <ion-input type="text" [(ngModel)]="login.username" label="Username"></ion-input>
+            <ion-label position="floating">Username</ion-label>
+            <ion-input formControlName="username" type="text"></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-input type="text" [(ngModel)]="login.email" label="Email"></ion-input>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input formControlName="email" type="email"></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-input type="text" [(ngModel)]="login.password" label="Password" type="password"></ion-input>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input formControlName="password" type="password"></ion-input>
           </ion-item>
-
-
         </ion-list>
 
-      <br>
+        <br>
 
-      <ion-button (click)="userRegister()"> Register </ion-button>
-      <ion-button (click)="userLogin()"> Log In </ion-button>
+        <!-- Submit button -->
+        <ion-button type="submit" expand="block">{{ isLogin ? 'Log In' : 'Register' }}</ion-button>
+      </form>
 
-      </ion-card-content>
+      <!-- Toggle button -->
+      <ion-button (click)="isLogin = !isLogin" expand="block">{{ isLogin ? 'Switch to Registration' : 'Switch to Login' }}</ion-button>
+    </ion-card-content>
   </ion-card>
 </ion-content>
