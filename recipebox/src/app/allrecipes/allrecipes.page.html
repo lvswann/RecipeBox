@@ -23,11 +23,12 @@
       <ion-list class="recipe-list">
         <ion-item *ngFor="let recipe of recipes" button (click)="goToRecipe(recipe.id)">
           <ion-label>{{ recipe.title }}</ion-label>
+          <ion-label class="ion-text-right">Time: {{recipe.time}} {{recipe.time_unit}}</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
 
-    <ion-card-content>
+    <!-- <ion-card-content>
       <ion-list class="recipe-list">
         <ion-item button (click)="goRecipe()">
           <ion-thumbnail slot="start">
@@ -44,7 +45,7 @@
           <ion-label>Recipe Two</ion-label>
         </ion-item>
       </ion-list>
-    </ion-card-content>
+    </ion-card-content> -->
 
   </ion-card>
 

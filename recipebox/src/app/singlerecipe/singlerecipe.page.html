@@ -17,9 +17,12 @@
 
   <ion-card *ngIf="recipe">
     <ion-card-header class="header" color="primary">
-      <ion-card-title style="font-size: 25px">{{ recipe.title }}</ion-card-title>
-      <ion-card-title class="ion-text-right">{{ recipe.time }} {{ recipe.time_unit }}</ion-card-title>
-      <!-- <ion-card-subtitle>Recipe Description</ion-card-subtitle> -->
+      <!-- <ion-card-title style="font-size: 25px">{{ recipe.title }}</ion-card-title>
+      <ion-card-title class="ion-text-right">{{ recipe.time }} {{ recipe.time_unit }}</ion-card-title> -->
+      <ion-card-title>
+        <div style="font-size: 25px">{{ recipe.title }}</div>
+        <div class="ion-text-right">{{ recipe.time }} {{ recipe.time_unit }}</div>
+      </ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
@@ -34,9 +37,10 @@
           <ion-title class="ion-text-center title" color="primary">Ingredients</ion-title>
           <ion-list [inset]="true" lines="none">
             <ion-item class="ion-text-center" *ngFor="let ingredient of recipe.ingredients">
-              <ion-label>{{ ingredient.name }}</ion-label>
-              <ion-label>{{ ingredient.amount }}</ion-label>
+              <!-- <ion-label>{{ ingredient.amount }}</ion-label>
               <ion-label>{{ ingredient.amount_unit }}</ion-label>
+              <ion-label>{{ ingredient.name }}</ion-label> -->
+              <ion-label>{{ ingredient.amount }} {{ ingredient.amount_unit }} {{ ingredient.name }}</ion-label>
             </ion-item>
           </ion-list>
         </ion-col>

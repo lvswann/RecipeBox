@@ -16,8 +16,8 @@
 
   <!-- Login/Register Card -->
   <ion-card>
-    <ion-card-header>
-      <ion-card-title>{{ isLogin ? 'User Login' : 'User Registration' }}</ion-card-title>
+    <ion-card-header class="header"  color="primary">
+      <ion-card-title class="ion-text-center">{{ isLogin ? 'User Login' : 'User Registration' }}</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
@@ -46,7 +46,7 @@
       </form>
 
       <!-- Toggle button -->
-      <ion-button (click)="isLogin = !isLogin" expand="block">{{ isLogin ? 'Switch to Registration' : 'Switch to Login' }}</ion-button>
+      <ion-button (click)="isLogin = !isLogin" expand="block">{{ isLogin ? "Don't Have an Account? Register" : "Have an  Account? Login" }}</ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>

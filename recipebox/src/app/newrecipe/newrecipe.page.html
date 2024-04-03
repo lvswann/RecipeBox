@@ -49,7 +49,7 @@
               <ion-input label="Amount" formControlName="amount" type="text"></ion-input>
               <ion-input label="Unit" formControlName="amount_unit" type="text"></ion-input>
 
-              <ion-button (click)="removeIngredient(i)" fill="clear">-</ion-button>
+              <ion-button (click)="removeIngredient(i)" style="font-size: 25px" fill="clear">-</ion-button>
 
             </ion-item>
             <ion-button (click)="addIngredient()" expand="full">Add Ingredient</ion-button>
@@ -61,7 +61,7 @@
             <ion-item *ngFor="let direction of directionsArray.controls; let i = index" [formGroupName]="i">
               <ion-input label="Description" formControlName="description" type="text"></ion-input>
 
-              <ion-button (click)="removeDirection(i)" fill="clear">-</ion-button>
+              <ion-button (click)="removeDirection(i)" style="font-size: 25px" fill="clear">-</ion-button>
 
             </ion-item>
             <ion-button (click)="addDirection()" expand="full">Add Direction</ion-button>
