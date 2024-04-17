@@ -14,6 +14,11 @@ const routes: Routes = [
     canActivate:[AuthGuard]
   },
   {
+    path: 'newrecipe/:id',
+    loadChildren: () => import('./newrecipe/newrecipe.module').then( m => m.NewrecipePageModule),
+    canActivate:[AuthGuard]
+  },
+  {
     path: 'newrecipe',
     loadChildren: () => import('./newrecipe/newrecipe.module').then( m => m.NewrecipePageModule),
     canActivate:[AuthGuard]
@@ -34,6 +39,11 @@ const routes: Routes = [
     canActivate:[AuthGuard]
   },
   {
+    path: 'newsection/:id',
+    loadChildren: () => import('./newsection/newsection.module').then( m => m.NewsectionPageModule),
+    canActivate:[AuthGuard]
+  },
+  {
     path: 'section/:id',
     loadChildren: () => import('./singlesection/singlesection.module').then( m => m.SinglesectionPageModule),
     canActivate:[AuthGuard]
@@ -45,7 +55,8 @@ const routes: Routes = [
   },
   {
     path: 'useraccount',
-    loadChildren: () => import('./useraccount/useraccount.module').then( m => m.UseraccountPageModule)
+    loadChildren: () => import('./useraccount/useraccount.module').then( m => m.UseraccountPageModule),
+    canActivate:[AuthGuard]
   },
 ];
 

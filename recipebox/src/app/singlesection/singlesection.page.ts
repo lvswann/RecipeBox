@@ -27,7 +27,7 @@ export class SinglesectionPage implements OnInit {
     this.route.params.subscribe(params => {
       const section_id = params['id'];
       this.loadSection(section_id);
-      this.loadRecipes();
+      this.loadRecipes(section_id);
     })
   }
 
@@ -48,9 +48,6 @@ export class SinglesectionPage implements OnInit {
 
   }
 
-  editSection() {
-
-  }
 
   deleteSection() {
     this.http.delete<any>(`http://127.0.0.1:5000/sections/${this.section.id}/`)
@@ -68,7 +65,8 @@ export class SinglesectionPage implements OnInit {
   }
 
 
-  loadRecipes() {
+  loadRecipes(section_id: string) {
+
     console.log('Loading recipes...');
 
     this.authService.userInfo$.subscribe(user => {
@@ -80,7 +78,7 @@ export class SinglesectionPage implements OnInit {
           'Authorization': `Bearer ${token}`
         };
 
-        this.http.get<any>('http://127.0.0.1:5000/recipes/', { headers })
+        this.http.get<any>(`http://127.0.0.1:5000/recipes/?section_id=${section_id}`, { headers })
           .subscribe({
             next: (response) => {
               console.log('Recipes response:', response);
@@ -107,6 +105,10 @@ export class SinglesectionPage implements OnInit {
 
   goToRecipe(recipe_id: string) {
     this._router.navigate(['/recipe', recipe_id])
+  }
+
+  editSection() {
+    this._router.navigate(['/newsection', this.section.id])
   }
 
 }

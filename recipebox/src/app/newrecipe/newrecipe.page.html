@@ -17,7 +17,7 @@
   </ion-header>
 
   <ion-card>
-    <ion-card-header class="header"  color="primary">
+    <ion-card-header class="header" color="primary">
       <ion-card-title class="ion-text-center">Add New Recipe</ion-card-title>
     </ion-card-header>
 
@@ -73,8 +73,10 @@
 
           </div>
 
-          <div formGroupName="section_checkbox">
+          <div>
+            <!-- formGroupName="section_checkbox"> -->
             <ion-item>
+              <!-- *ngIf="sections_exist"> -->
               <ion-label position="floating">Sections</ion-label>
               <ion-select formControlName="section_ids" multiple="true" (ionChange)="updateSectionIds($event)">
                 <ion-select-option *ngFor="let section of sections" [value]="section.id">{{ section.title }}</ion-select-option>

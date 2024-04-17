@@ -40,6 +40,8 @@ export class SinglerecipePage implements OnInit {
   }
 
   editRecipe() {
+    this._router.navigate(['/newrecipe', this.recipe.id])
+    // this.loadRecipe(recipe_id);
 
   }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -12,6 +12,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class NewsectionPage implements OnInit {
 
+  edit: boolean = false;
+  section: any;
   sectionForm: FormGroup = this.formBuilder.group({
     title: ['', [Validators.required]],
     description: ['', Validators.required],
@@ -19,12 +21,21 @@ export class NewsectionPage implements OnInit {
 
   constructor(
     private _router: Router,
+    private route: ActivatedRoute,
     private http: HttpClient,
     public formBuilder: FormBuilder,
     private authService: AuthService,
     ) { }
 
   ngOnInit() {
+
+    this.route.params.subscribe(params => {
+      const section_id = params['id'];
+      if (section_id) {
+        this.edit = true;
+        this.loadSection(section_id);
+      }
+    });
   }
 
   saveSection() {
@@ -47,9 +58,10 @@ export class NewsectionPage implements OnInit {
           'Authorization': `Bearer ${token}`
         };
 
-        // Send POST request with access token in headers
-        this.http.post<any>('http://127.0.0.1:5000/sections/', this.sectionForm.value, { headers })
-        .subscribe({
+        const url = this.edit ? this.http.put<any>(`http://127.0.0.1:5000/sections/${this.section.id}/`, this.sectionForm.value, { headers }) : this.http.post<any>('http://127.0.0.1:5000/sections/', this.sectionForm.value, { headers });
+
+        // Send PUT or POST request based on editing mode
+        url.subscribe({
           next: (response) => {
             console.log('Successful new_section POST Response:', response);
             this.sectionForm.reset()
@@ -68,6 +80,26 @@ export class NewsectionPage implements OnInit {
         console.log('User not logged in');
       }
     });
+  }
+
+  loadSection(section_id: string) {
+
+    this.http.get<any>(`http://127.0.0.1:5000/sections/${section_id}/`)
+    .subscribe({
+      next: (response) => {
+        console.log('Section:', response.section);
+        this.section = response.section;
+
+        // update form
+        this.sectionForm.patchValue(this.section)
+      },
+      error: (error) => {
+        console.error('Error getting section details:', error);
+        // alert('Failed to fetch section details');
+        },
+      complete: () => {}
+    })
+
   }
 
 
