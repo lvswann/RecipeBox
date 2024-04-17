@@ -3,8 +3,9 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <img button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <img class="logo-margin" button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
     <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
+    <ion-button class="account-margin" button (click)="goToAccount()">Account</ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -50,8 +51,10 @@
         <ion-row>
 
           <ion-card button (click)="goNewSection()" class="ion-text-center">
-            <ion-card-content > Add New Section
-            </ion-card-content>
+            <ion-card-header>
+              <ion-card-title > Add New Section
+              </ion-card-title>
+            </ion-card-header>
           </ion-card>
 
           <div class="scrolling-wrapper">
@@ -97,7 +100,6 @@
 
         </ion-row>
 
-        <ion-button button (click)="logout()" expand="block">Logout</ion-button>
       </ion-card-content>
     </ion-card>
  </ion-content>

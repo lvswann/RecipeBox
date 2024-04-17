@@ -129,6 +129,10 @@ export class HomePage implements OnInit {
     this._router.navigate(['/section', section_id])
   }
 
+  goToAccount() {
+    this._router.navigate(['/useraccount'])
+  }
+
   goHome(){
     this._router.navigate(['/home'])
   }

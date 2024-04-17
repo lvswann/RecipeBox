@@ -49,6 +49,8 @@ export class SinglesectionPage implements OnInit {
   }
 
 
+  
+
   deleteSection() {
     this.http.delete<any>(`http://127.0.0.1:5000/sections/${this.section.id}/`)
     .subscribe({
@@ -94,6 +96,11 @@ export class SinglesectionPage implements OnInit {
     });
   }
 
+
+
+  goToAccount() {
+    this._router.navigate(['/useraccount'])
+  }
 
   goHome(){
     this._router.navigate(['/home'])

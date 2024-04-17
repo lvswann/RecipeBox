@@ -56,11 +56,27 @@
 
   .button{
     margin: 6px;
-    // font-family: "Yeseva One", serif;
-    // font-weight: 400;
-    // font-style: normal;
+ 
   }
 
   .card-title{
     font-size: 25px
+  }
+
+  .logo-margin{
+    margin-top: 4px;
+    margin-left: 4px;
+
+  }
+
+  .menu-logo-margin{
+    margin-top: 4px;
+    margin-left: 18%;
+  }
+
+  .account-margin{
+    margin-top: 35px;
+    margin-right: 12px;
+    float: right; 
+    vertical-align: middle;
   }

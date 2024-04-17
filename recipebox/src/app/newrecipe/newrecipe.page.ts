@@ -134,6 +134,11 @@ export class NewrecipePage implements OnInit {
     this._router.navigate(['/home'])
   }
 
+  goToAccount() {
+    this._router.navigate(['/useraccount'])
+  }
+  
+
   createIngredientFormGroup(): FormGroup {
     return this.formBuilder.group({
       name: ['', Validators.required],
