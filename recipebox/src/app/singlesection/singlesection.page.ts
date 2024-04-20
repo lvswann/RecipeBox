@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
-
+import { ApiService } from '../services/api.service';
+import { Section, Recipe } from '../interfaces';
 
 @Component({
   selector: 'app-singlesection',
@@ -17,7 +18,8 @@ export class SinglesectionPage implements OnInit {
     private http: HttpClient,
     private route: ActivatedRoute,
     private _router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private apiService: ApiService,
   ) {
     this.recipes = [];
   }
@@ -27,76 +29,52 @@ export class SinglesectionPage implements OnInit {
     this.route.params.subscribe(params => {
       const section_id = params['id'];
       this.loadSection(section_id);
-      this.loadRecipes(section_id);
+      this.loadSectionRecipes(section_id);
     })
   }
 
   loadSection(section_id: string) {
-
-    this.http.get<any>(`http://127.0.0.1:5000/sections/${section_id}/`)
-    .subscribe({
+    this.apiService.get_with_id<{ section: Section }>('sections', section_id.toString()).subscribe({
       next: (response) => {
         console.log('Section:', response.section);
         this.section = response.section;
       },
       error: (error) => {
         console.error('Error getting section details:', error);
-        // alert('Failed to fetch section details');
-        },
+      },
       complete: () => {}
     })
-
   }
 
 
-  
-
   deleteSection() {
-    this.http.delete<any>(`http://127.0.0.1:5000/sections/${this.section.id}/`)
-    .subscribe({
+    this.apiService.delete_with_id('sections', this.section.id.toString()).subscribe({
       next: (response) => {
         console.log('Section deleted successfully');
         this.goHome()
       },
       error: (error) => {
         console.error('Section deletion unsuccessful:', error);
-        // alert('Failed to delete section');
-        },
+      },
       complete: () => {}
     })
   }
 
 
-  loadRecipes(section_id: string) {
-
+  loadSectionRecipes(section_id: string) {
     console.log('Loading recipes...');
 
-    this.authService.userInfo$.subscribe(user => {
-      if (user && user.sub) {
-        const token = user.sub
-
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        };
-
-        this.http.get<any>(`http://127.0.0.1:5000/recipes/?section_id=${section_id}`, { headers })
-          .subscribe({
-            next: (response) => {
-              console.log('Recipes response:', response);
-              this.recipes = response.recipes;
-            },
-            error: (error) => {
-              console.error('Error getting recipes:', error);
-              // alert('Getting all recipes failed');
-            },
-            complete: () => {},
-          });
-      }
+    this.apiService.get_all<{ recipes: Recipe[] }>('recipes', `?section_id=${section_id}`).subscribe({
+      next: (response) => {
+        console.log('All section recipes response:', response);
+        this.recipes = response.recipes;
+      },
+      error: (error) => {
+        console.error('Error getting section recipes:', error);
+      },
+      complete: () => {},
     });
   }
-
-
 
   goToAccount() {
     this._router.navigate(['/useraccount'])

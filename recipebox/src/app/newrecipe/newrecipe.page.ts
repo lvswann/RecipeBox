@@ -3,6 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
+import { Recipe, Section, Ingredient, Direction } from '../interfaces';
 
 @Component({
   selector: 'app-newrecipe',
@@ -19,7 +21,6 @@ export class NewrecipePage implements OnInit {
     title: ['', [Validators.required]],
     time: ['', Validators.required],
     time_unit: ['', Validators.required],
-    pinned: [false],
     ingredients: this.formBuilder.array([
       this.createIngredientFormGroup()
     ]),
@@ -36,6 +37,7 @@ export class NewrecipePage implements OnInit {
     private http: HttpClient,
     public formBuilder: FormBuilder,
     private authService: AuthService,
+    private apiService: ApiService,
   ) {
     this.sections = [];
   }
@@ -52,34 +54,57 @@ export class NewrecipePage implements OnInit {
     });
   }
 
-  loadRecipe(recipe_id: number) {
-    this.http.get<any>(`http://127.0.0.1:5000/recipes/${recipe_id}/`)
-      .subscribe({
-        next: (response) => {
-          console.log('Loading recipe details:', response.recipe);
-          this.recipe = response.recipe;
-          this.recipeForm.patchValue(this.recipe);
-          // Select previously selected sections
-          if (this.sections_exist && this.recipe.section_ids.length > 0) {
-            this.recipeForm.controls['section_ids'].setValue(this.recipe.section_ids);
-          }
-          console.log("loading recipes section_ids:", this.recipe.section_ids)
-          // const selectedSections = this.recipe.section_ids;
-          // if (selectedSections.length > 0) {
-          //   this.recipeForm.controls['section_ids'].setValue(selectedSections);
-          // } else {
-          //   this.recipeForm.controls['section_ids'].setValue([]); // Set to empty array if no sections selected
-          // }
-        },
-        error: (error) => {
-          console.error('Error getting recipe details:', error);
-        },
-        complete: () => {}
-      });
+  loadRecipe(recipe_id: string) {
+    this.apiService.get_with_id<{ recipe: Recipe }>('recipes', recipe_id.toString()).subscribe({
+      next: (response) => {
+        console.log('Recipe:', response.recipe);
+        this.recipe = response.recipe;
+
+        // Patch the basic recipe details to the form
+        this.recipeForm.patchValue(this.recipe);
+
+        // Load ingredients starting from the second one
+        const ingredientsArray = this.recipeForm.get('ingredients') as FormArray;
+        this.recipe.ingredients.slice(1).forEach((ingredient: Ingredient)  => {
+          ingredientsArray.push(this.formBuilder.group({
+            name: [ingredient.name, Validators.required],
+            amount: [ingredient.amount, Validators.required],
+            amount_unit: [ingredient.amount_unit, Validators.required]
+          }));
+        });
+
+        // Load directions starting from the second one
+        const directionsArray = this.recipeForm.get('directions') as FormArray;
+        this.recipe.directions.slice(1).forEach((direction: Direction)  => {
+          directionsArray.push(this.formBuilder.group({
+            description: [direction.description, Validators.required]
+          }));
+        });
+
+
+        // // Select previously selected sections
+        // if (this.sections_exist && this.recipe.section_ids.length > 0) {
+        //   this.recipeForm.controls['section_ids'].setValue(this.recipe.section_ids);
+        // }
+
+        console.log("loading recipes section_ids:", this.recipe.section_ids)
+        // const selectedSections = this.recipe.section_ids;
+        // if (selectedSections.length > 0) {
+        //   this.recipeForm.controls['section_ids'].setValue(selectedSections);
+        // } else {
+        //   this.recipeForm.controls['section_ids'].setValue([]); // Set to empty array if no sections selected
+        // }
+
+      },
+      error: (error) => {
+        console.error('Error getting recipe details:', error);
+      },
+      complete: () => {}
+    })
   }
 
-
   saveRecipe() {
+    console.log('in saveRecipe')
 
     if (!this.sections_exist) {
       this.recipeForm.controls['section_ids'].setValue([]);
@@ -91,42 +116,47 @@ export class NewrecipePage implements OnInit {
     }
 
     console.log("save recipe recipeForm.value: ", this.recipeForm.value)
-    this.authService.userInfo$.subscribe(user => {
-      if (user && user.sub) {
-        const token = user.sub
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        };
-
-        const url = this.edit ? this.http.put<any>(`http://127.0.0.1:5000/recipes/${this.recipe.id}/`, this.recipeForm.value, { headers }) : this.http.post<any>('http://127.0.0.1:5000/recipes/', this.recipeForm.value, { headers });
-
-        // Send PUT or POST request based on editing mode
-        url.subscribe({
-            next: (response) => {
-              console.log(`Successful Response:`, response);
-              this.recipeForm.reset();
-              this._router.navigate(['/allrecipes']);
-            },
-            error: (error) => {
-              console.error('unsuccessful', error);
-            },
-            complete: () => {}
-          });
-      } else {
-        console.log('User not logged in');
-      }
-    });
-  }
 
 
-  updatePinned(event: CustomEvent) {
-    this.recipeForm.controls['pinned'].setValue(event.detail.checked);
+    if (this.edit) {
+      console.log("in edit statement, recipe.id = ", this.recipe.id.toString())
+      this.apiService.put_with_id<any>('recipes', this.recipe.id.toString(), this.recipeForm.value).subscribe({
+        next: (response) => {
+          console.log(`Successful Response:`, response);
+          this.recipeForm.reset();
+          this.goToRecipe(this.recipe.id);
+        },
+        error: (error) => {
+          console.error('unsuccessful', error);
+        },
+        complete: () => {}
+      });
+    } else {
+      this.apiService.post<any>('recipes', this.recipeForm.value).subscribe({
+        next: (response) => {
+          console.log(`Successful Response:`, response);
+          this.recipeForm.reset();
+          this.goToRecipe(response.recipe_id);
+        },
+        error: (error) => {
+          console.error('unsuccessful', error);
+        },
+        complete: () => {}
+      });
+    }
   }
 
   updateSectionIds(event: CustomEvent) {
     const selected_ids = event.detail.value as number[];
     this.recipeForm.controls['section_ids'].setValue(selected_ids);
+  }
+
+  cancel() {
+    if (this.edit) {
+      this.goToRecipe(this.recipe.id);
+    } else {
+      this.goHome()
+    }
   }
 
 
@@ -137,7 +167,7 @@ export class NewrecipePage implements OnInit {
   goToAccount() {
     this._router.navigate(['/useraccount'])
   }
-  
+
 
   createIngredientFormGroup(): FormGroup {
     return this.formBuilder.group({
@@ -179,34 +209,28 @@ export class NewrecipePage implements OnInit {
     return this.recipeForm.get('directions') as FormArray;
   }
 
+
   loadSections() {
     console.log('Loading sections...');
 
-    this.authService.userInfo$.subscribe(user => {
-      if (user && user.sub) {
-        const token = user.sub
-
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        };
-
-        this.http.get<any>('http://127.0.0.1:5000/sections/', { headers })
-          .subscribe({
-            next: (response) => {
-              console.log('Sections response:', response.sections);
-              this.sections = response.sections;
-              if (this.sections.length > 0) {
-                this.sections_exist = true;
-              }
-
-            },
-            error: (error) => {
-              console.error('Error getting sections:', error);
-            },
-            complete: () => {},
-          });
-      }
+    this.apiService.get_all<{ sections: Section[] }>('sections').subscribe({
+      next: (response) => {
+        console.log('All sections response:', response);
+        this.sections = response.sections;
+        if (this.sections.length > 0) {
+          this.sections_exist = true;
+        }
+      },
+      error: (error) => {
+        console.error('Error getting all sections:', error);
+      },
+      complete: () => {},
     });
   }
+
+
+  goToRecipe(recipe_id: string) {
+    this._router.navigate(['/recipe', recipe_id])
+  }
+
 }

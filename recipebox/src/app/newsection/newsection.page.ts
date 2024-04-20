@@ -3,7 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
-
+import { ApiService } from '../services/api.service';
+import { Section } from '../interfaces';
 
 @Component({
   selector: 'app-newsection',
@@ -25,10 +26,10 @@ export class NewsectionPage implements OnInit {
     private http: HttpClient,
     public formBuilder: FormBuilder,
     private authService: AuthService,
+    private apiService: ApiService,
     ) { }
 
   ngOnInit() {
-
     this.route.params.subscribe(params => {
       const section_id = params['id'];
       if (section_id) {
@@ -38,54 +39,45 @@ export class NewsectionPage implements OnInit {
     });
   }
 
-  saveSection() {
-    console.log("Form value:", this.sectionForm.value);
-    console.log('Form validity:', this.sectionForm.valid);
-    console.log('Form errors:', this.sectionForm.errors);
 
+
+  saveSection() {
 
     if (this.sectionForm.invalid) {
       console.log('sectionForm is invalid');
       return;
     }
 
-    this.authService.userInfo$.subscribe(user => {
-      if (user && user.sub) {
-        const token = user.sub
-
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        };
-
-        const url = this.edit ? this.http.put<any>(`http://127.0.0.1:5000/sections/${this.section.id}/`, this.sectionForm.value, { headers }) : this.http.post<any>('http://127.0.0.1:5000/sections/', this.sectionForm.value, { headers });
-
-        // Send PUT or POST request based on editing mode
-        url.subscribe({
-          next: (response) => {
-            console.log('Successful new_section POST Response:', response);
-            this.sectionForm.reset()
-            // alert("Successful new_section POST")
-            // Redirect to single section page or any other page
-
-            // change to go straight to section page
-            this._router.navigate(['/home'])
-          },
-          error: (error) => {
-            console.error("POST error", error);
-          },
-          complete: () => { },
-        });
-      } else {
-        console.log('User not logged in');
-      }
-    });
+    if (this.edit) {
+      this.apiService.put_with_id<any>('sections', this.section.id, this.sectionForm.value).subscribe({
+        next: (response) => {
+          console.log(`Successful Response:`, response);
+          this.sectionForm.reset();
+          this.goToSection(this.section.id);
+        },
+        error: (error) => {
+          console.error('unsuccessful', error);
+        },
+        complete: () => {}
+      });
+    } else {
+      this.apiService.post<any>('sections', this.sectionForm.value).subscribe({
+        next: (response) => {
+          console.log(`Successful Response:`, response);
+          this.sectionForm.reset();
+          this.goToSection(response.section_id);
+        },
+        error: (error) => {
+          console.error('unsuccessful', error);
+        },
+        complete: () => {}
+      });
+    }
   }
 
-  loadSection(section_id: string) {
 
-    this.http.get<any>(`http://127.0.0.1:5000/sections/${section_id}/`)
-    .subscribe({
+  loadSection(section_id: string) {
+    this.apiService.get_with_id<{ section: Section }>('sections', section_id.toString()).subscribe({
       next: (response) => {
         console.log('Section:', response.section);
         this.section = response.section;
@@ -95,13 +87,22 @@ export class NewsectionPage implements OnInit {
       },
       error: (error) => {
         console.error('Error getting section details:', error);
-        // alert('Failed to fetch section details');
-        },
+      },
       complete: () => {}
     })
-
   }
 
+  cancel() {
+    if (this.edit) {
+      this.goToSection(this.section.id);
+    } else {
+      this.goHome()
+    }
+  }
+
+  goToSection(section_id: string) {
+    this._router.navigate(['/section', section_id])
+  }
 
   goToAccount() {
     this._router.navigate(['/useraccount'])

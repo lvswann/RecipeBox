@@ -39,7 +39,6 @@ def create_recipe():
         title=data['title'],
         time=data['time'],
         time_unit=data['time_unit'],
-        pinned=data['pinned'],
         user_id = db_user.id,
     )
 
@@ -72,7 +71,7 @@ def create_recipe():
     db.session.add(new_recipe)
     db.session.commit()
 
-    return jsonify({'message': 'Recipe was saved', 'data': data})
+    return jsonify({'message': 'Recipe was saved', 'recipe_id': new_recipe.id})
 
 
 @bp.route('/recipes/', methods=['GET'])
@@ -244,31 +243,6 @@ def delete_recipe(recipe_id):
 
 
 ## EDITING RECIPES   
-@bp.route('/recipes/pin/', methods=['POST'])
-@cross_origin()
-@jwt_required()
-def pin_recipe():
-    # code for confirming user
-
-
-    data = request.json
-    recipe_id = data['id']
-    pinned = data['pinned']
-
-    # Get the recipe from the database
-    recipe = Recipe.query.get(recipe_id)
-    if not recipe:
-        return jsonify({'error': 'Recipe not found'}), 404
-
-    # Update pin
-    recipe.pinned = pinned
-    db.session.commit()
-
-    return jsonify({'message': 'Recipe pin updated', 'pinned': pinned}), 200
-
-
-
-
 @bp.route('/recipes/<int:recipe_id>/', methods=['PUT'])
 @cross_origin()
 @jwt_required()
@@ -298,6 +272,14 @@ def edit_recipe(recipe_id):
     print("Current recipe: ", recipe)
     print("Recipe id: ", recipe.id)
     data = request.json
+
+    # Check if the request contains the 'pinned' key
+    if 'update_pinned' in data:
+        # Update only the 'pinned' value of the recipe
+        recipe.pinned = data['update_pinned']
+        db.session.commit()
+        return jsonify({'message': 'Recipe pin updated'}), 200
+
 
     # update data
     recipe.title = data['title']

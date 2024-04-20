@@ -44,7 +44,7 @@ def create_section():
     db.session.add(new_section)
     db.session.commit()
 
-    return jsonify({'message': 'Section was saved', 'data': data})
+    return jsonify({'message': 'Section was saved', 'section_id': new_section.id})
 
 
 @bp.route('/sections/', methods=['GET'])

@@ -25,10 +25,6 @@
     <ion-card-content>
       <form [formGroup]="recipeForm" (ngSubmit)="saveRecipe()">
         <ion-list>
-          <ion-item>
-            <ion-label>Pin Recipe</ion-label>
-            <ion-checkbox formControlName="pinned" (ionChange)="updatePinned($event)"></ion-checkbox>
-          </ion-item>
 
           <ion-item>
             <ion-label position="floating">Title</ion-label>
@@ -95,7 +91,7 @@
         <br>
 
         <ion-button type="submit" expand="block">Save</ion-button>
-        <ion-button (click)="goHome()" expand="block">Cancel</ion-button>
+        <ion-button (click)="cancel()" expand="block">Cancel</ion-button>
       </form>
     </ion-card-content>
   </ion-card>
