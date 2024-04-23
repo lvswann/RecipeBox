@@ -26,7 +26,7 @@ def create_recipe():
 
     # Check if the user's public ID matches the requested public ID
     if user_public_id != requested_public_id:
-        return jsonify({'error': 'Unauthorized access'}), 401
+        return jsonify({'error': 'Unauthorized access'}), 404
 
     db_user = User.query.filter_by(public_id=user_public_id).first()
 
@@ -95,7 +95,7 @@ def get_recipes():
 
     # Check if the user's public ID matches the requested public ID
     if user_public_id != requested_public_id:
-        return jsonify({'error': 'Unauthorized access'}), 401
+        return jsonify({'error': 'Unauthorized access'}), 404
 
     user = User.query.filter_by(public_id=user_public_id).first()
 
@@ -112,7 +112,7 @@ def get_recipes():
             # Retrieve recipes associated with the user
             user_recipes = Recipe.query.filter_by(user=user).all()
     else:
-        return jsonify({'error': 'Cannot find user in database'}), 401
+        return jsonify({'error': 'Cannot find user in database'}), 404
 
 
     print("user_recipes: ", user_recipes)
@@ -165,7 +165,7 @@ def get_recipe(recipe_id):
 
     # Check if the user's public ID matches the requested public ID
     if user_public_id != requested_public_id:
-        return jsonify({'error': 'Unauthorized access'}), 401
+        return jsonify({'error': 'Unauthorized access'}), 404
 
     user = User.query.filter_by(public_id=user_public_id).first()
 
@@ -174,7 +174,7 @@ def get_recipe(recipe_id):
         # Retrieve the recipe associated with the user and recipe ID
         recipe = Recipe.query.filter_by(user=user, id=recipe_id).first()
     else:
-        return jsonify({'error': 'Cannot find user in database'}), 401
+        return jsonify({'error': 'Cannot find user in database'}), 404
     
 
     # Check if recipe exists
@@ -228,7 +228,7 @@ def delete_recipe(recipe_id):
         # Retrieve the recipe associated with the user and recipe ID
         recipe = Recipe.query.filter_by(user=user, id=recipe_id).first()
     else:
-        return jsonify({'error': 'Cannot find user in database'}), 401
+        return jsonify({'error': 'Cannot find user in database'}), 404
     
     if not recipe:
         return jsonify({'error': 'Recipe not found'}), 404
@@ -261,7 +261,7 @@ def edit_recipe(recipe_id):
 
     # Check if the user exists
     if not user:
-        return jsonify({'error': 'Cannot find user in database'}), 401
+        return jsonify({'error': 'Cannot find user in database'}), 404
 
 
     # Retrieve the recipe associated with the user and recipe ID

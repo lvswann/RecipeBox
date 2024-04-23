@@ -100,4 +100,9 @@ export class HomePage implements OnInit {
     this.loadSections();
   }
 
+  ionChange(event: any) {
+    console.log("search event: ", event.detail.value)
+    this._router.navigate(['/search', event.detail.value])
+  }
+
 }

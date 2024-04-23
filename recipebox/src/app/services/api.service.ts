@@ -20,7 +20,7 @@ export class ApiService {
   ) {}
 
 
-  // Recipe and Section API Calls
+  // API Calls
   get_all<T>(type: string, param: string = ''): Observable<T> {
     return this.http.get<T>(`${this.api_url}/${type}/${param}`, this.httpHeaderAuth);
   }
@@ -41,7 +41,6 @@ export class ApiService {
     return this.http.post<T>(`${this.api_url}/${type}/`, data, this.httpHeaderAuth);
   }
 
-  // User API
 
 
 

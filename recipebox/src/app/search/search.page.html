@@ -1,0 +1,42 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>search</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">search</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+
+  <ion-card>
+    <ion-card-header class="header"  color="primary">
+      <ion-card-title class="ion-text-center"> Search Results for {{ keyword }} </ion-card-title>
+      <!-- <ion-card-title class="ion-text-center"> Search Results for "{{ keyword | titlecase }}" </ion-card-title> -->
+    </ion-card-header>
+
+
+    <ion-card-content>
+      <!-- Toggle button to switch between recipes and sections -->
+      <ion-button expand="block" (click)="toggleSearchType()">
+        {{ searchType === 'recipes' ? 'Show Sections' : 'Show Recipes' }}
+      </ion-button>
+
+      <!-- Message for no results-->
+      <ion-item class="ion-text-center" *ngIf="getResults().length === 0">
+        No {{ searchType === 'recipes' ? 'recipes' : 'sections' }} found.
+      </ion-item>
+
+      <ion-list class="result-list">
+        <ion-item *ngFor="let result of getResults()" (click)="goToResult(result)">
+          <ion-label>{{ result.title }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>

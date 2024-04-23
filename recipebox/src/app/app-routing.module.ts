@@ -57,6 +57,12 @@ const routes: Routes = [
     loadChildren: () => import('./useraccount/useraccount.module').then( m => m.UseraccountPageModule),
     canActivate:[AuthGuard]
   },
+  {
+    path: 'search/:keyword',
+    loadChildren: () => import('./search/search.module').then( m => m.SearchPageModule),
+    canActivate:[AuthGuard]
+  },
+
 ];
 
 @NgModule({
