@@ -3,9 +3,9 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <img button class="logo-margin" (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <!-- <img button class="logo-margin" (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" /> -->
     <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
-    <ion-button class="account-margin" button (click)="goToAccount()">Account</ion-button>
+    <!-- <ion-button class="account-margin" button (click)="goToAccount()">Account</ion-button> -->
   </ion-toolbar>
 </ion-header>
 
@@ -26,13 +26,11 @@
       <form [formGroup]="sectionForm" (ngSubmit)="saveSection()">
         <ion-list>
           <ion-item>
-            <ion-label position="floating">Title</ion-label>
-            <ion-input formControlName="title" type="text"></ion-input>
+            <ion-input formControlName="title" label="Title" labelPlacement="floating" type="text"></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-label position="floating">Description</ion-label>
-            <ion-input formControlName="description" type="text"></ion-input>
+            <ion-input formControlName="description" label="Description" labelPlacement="floating" type="text"></ion-input>
           </ion-item>
 
         </ion-list>
@@ -41,8 +39,8 @@
         <!-- maybe -->
         <br>
 
-        <ion-button [disabled]="disableButton" type="submit" expand="block">Save</ion-button>
-        <ion-button (click)="cancel()" expand="block">Cancel</ion-button>
+        <ion-button [disabled]="disableButton" type="submit" >Save</ion-button>
+        <ion-button (click)="cancel()" >Cancel</ion-button>
       </form>
     </ion-card-content>
   </ion-card>

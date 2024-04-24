@@ -3,9 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <img button class="logo-margin" (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
     <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
-    <ion-button class="account-margin" button (click)="goToAccount()">Account</ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -27,13 +25,12 @@
         <ion-list>
 
           <ion-item>
-            <ion-label position="floating">Title</ion-label>
-            <ion-input formControlName="title" type="text"></ion-input>
+            <ion-input labelPlacement="floating" label="Title" formControlName="title" type="text"></ion-input>
           </ion-item>
 
           <ion-item>
-            <ion-input labelPlacement="floating" label="Time" formControlName="time" type="number"></ion-input>
-            <ion-select labelPlacement="floating" label="Time Unit" formControlName="time_unit">
+            <ion-input style="margin-right: 10px;" labelPlacement="floating" label="Time" formControlName="time" type="number"></ion-input>
+            <ion-select style="min-width: 150px;" labelPlacement="floating" label="Time Unit" formControlName="time_unit">
               <ion-select-option *ngFor="let unit of timeUnits" [value]="unit">{{ unit }}</ion-select-option>
             </ion-select>
           </ion-item>
@@ -44,14 +41,14 @@
           <!-- Ingredients -->
           <div formArrayName="ingredients">
             <ion-item *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
-              <ion-input labelPlacement="floating" label="Ingredient" formControlName="name" type="text"></ion-input>
-              <ion-input labelPlacement="floating" label="Amount" formControlName="amount" type="number"></ion-input>
+              <ion-input style="margin-right: 10px;" labelPlacement="floating" label="Ingredient" formControlName="name" type="text"></ion-input>
+              <ion-input style="margin-right: 10px;" labelPlacement="floating" label="Amount" formControlName="amount"></ion-input>
               <ion-input labelPlacement="floating" label="Unit" formControlName="amount_unit" type="text"></ion-input>
 
               <ion-button (click)="removeIngredient(i)" style="font-size: 25px" fill="clear">-</ion-button>
 
             </ion-item>
-            <ion-button (click)="addIngredient()" expand="full">Add Ingredient</ion-button>
+            <ion-button (click)="addIngredient()" >Add Ingredient</ion-button>
           </div>
 
 
@@ -63,7 +60,7 @@
               <ion-button (click)="removeDirection(i)" style="font-size: 25px" fill="clear">-</ion-button>
 
             </ion-item>
-            <ion-button (click)="addDirection()" expand="full">Add Direction</ion-button>
+            <ion-button (click)="addDirection()">Add Direction</ion-button>
 
           </div>
 
@@ -83,8 +80,8 @@
         <!-- maybe -->
         <br>
 
-        <ion-button [disabled]="disableButton" type="submit" expand="block">Save</ion-button>
-        <ion-button (click)="cancel()" expand="block">Cancel</ion-button>
+        <ion-button [disabled]="disableButton" type="submit" >Save</ion-button>
+        <ion-button (click)="cancel()" >Cancel</ion-button>
       </form>
     </ion-card-content>
   </ion-card>

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
+import { MenuController } from '@ionic/angular';
+
 
 // set something to confirm username is entered for registration
 
@@ -25,11 +27,15 @@ export class LoginPage implements OnInit {
     private _router: Router,
     public formBuilder: FormBuilder,
     private authService: AuthService,
+    public menu: MenuController,
     ) { }
 
   ngOnInit() {
   }
 
+  ionViewWillEnter() {
+    this.menu.enable(false);
+  }
 
   // maybe use one function for login/register
   async login() {

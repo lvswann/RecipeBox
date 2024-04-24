@@ -43,11 +43,33 @@
         <br>
 
         <!-- Submit button -->
-        <ion-button [disabled]="disableButton" type="submit" expand="block">{{ isLogin ? 'Log In' : 'Register' }}</ion-button>
+        <ion-button [disabled]="disableButton" type="submit" >{{ isLogin ? 'Log In' : 'Register' }}</ion-button>
       </form>
 
       <!-- Toggle button -->
-      <ion-button (click)="isLogin = !isLogin" expand="block">{{ isLogin ? "Don't Have an Account? Register" : "Have an  Account? Login" }}</ion-button>
+
+      <style>
+        .container {
+          height: 20px;
+          position: relative;
+        }
+        
+        .center {
+          margin: 0;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+        }
+        </style>
+        
+
+      <div class="container">
+        <div class="center">
+          <ion-button (click)="isLogin = !isLogin" fill="clear">{{ isLogin ? "Don't Have an Account? Register" : "Have an  Account? Login" }}</ion-button>
+        </div>
+      </div>
     </ion-card-content>
   </ion-card>
 </ion-content>
