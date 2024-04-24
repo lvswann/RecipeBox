@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <img class="logo-margin" button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
-    <ion-searchbar class="search" enterkeyhint="search" debounce="1000" (ionChange)="ionChange($event)"></ion-searchbar>
+    <ion-searchbar [(ngModel)]="searchQuery" class="search" enterkeyhint="search" debounce="1000" (ionChange)="ionChange($event)"></ion-searchbar>
     <ion-button class="account-margin" button (click)="goToAccount()">Account</ion-button>
   </ion-toolbar>
 </ion-header>
@@ -27,7 +27,7 @@
         <ion-row>
           <div class="scrolling-wrapper">
 
-            <ion-card class="card" *ngFor="let recipe of pinned_recipes" button (click)="goToRecipe(recipe.id)">
+            <ion-card class="card" *ngFor="let recipe of pinned_recipes" button (click)="goToRecipe(recipe.id.toString())">
               <ion-card-header>
                 <ion-card-title>{{ recipe.title }}</ion-card-title>
               </ion-card-header>
@@ -59,7 +59,7 @@
 
           <div class="scrolling-wrapper">
 
-            <ion-card class="card" *ngFor="let section of sections" button (click)="goToSection(section.id)">
+            <ion-card class="card" *ngFor="let section of sections" button (click)="goToSection(section.id.toString())">
               <ion-card-header>
                 <ion-card-title>{{ section.title }}</ion-card-title>
               </ion-card-header>

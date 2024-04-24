@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { AuthService } from '../auth/auth.service';
-import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
-import { Recipe, Section, Ingredient, Direction } from '../interfaces';
+import { Recipe, Section, Ingredient, Direction, TimeUnit } from '../interfaces';
 
 @Component({
   selector: 'app-newrecipe',
@@ -12,35 +10,30 @@ import { Recipe, Section, Ingredient, Direction } from '../interfaces';
   styleUrls: ['./newrecipe.page.scss'],
 })
 export class NewrecipePage implements OnInit {
-  sections: any[];
-  recipe: any;
   edit: boolean = false;
   sections_exist: boolean = false;
+  disableButton: boolean = false;
+
+  sections: Section[] = [];
+  recipe: Recipe | null = null;
+  timeUnits: string[] = Object.values(TimeUnit);
 
   recipeForm: FormGroup = this.formBuilder.group({
     title: ['', [Validators.required]],
-    time: ['', Validators.required],
-    time_unit: ['', Validators.required],
-    ingredients: this.formBuilder.array([
-      this.createIngredientFormGroup()
-    ]),
-    directions: this.formBuilder.array([
-      this.createDirectionFormGroup()
-    ]),
-    section_ids: [[]] // Initialize with an empty array
+    time: ['', [Validators.required]],
+    time_unit: ['', [Validators.required]],
+    ingredients: this.formBuilder.array([]),
+    directions: this.formBuilder.array([]),
+    section_ids: [[]]
   });
 
 
   constructor(
     private _router: Router,
     private route: ActivatedRoute,
-    private http: HttpClient,
     public formBuilder: FormBuilder,
-    private authService: AuthService,
     private apiService: ApiService,
-  ) {
-    this.sections = [];
-  }
+  ) {}
 
   ngOnInit() {
     this.loadSections();
@@ -50,51 +43,19 @@ export class NewrecipePage implements OnInit {
       if (recipe_id) {
         this.edit = true;
         this.loadRecipe(recipe_id);
+      } else {
+        this.addIngredient();
+        this.addDirection();
       }
     });
   }
 
   loadRecipe(recipe_id: string) {
-    this.apiService.get_with_id<{ recipe: Recipe }>('recipes', recipe_id.toString()).subscribe({
+    this.apiService.get_with_id<any>('recipes', recipe_id.toString()).subscribe({
       next: (response) => {
         console.log('Recipe:', response.recipe);
         this.recipe = response.recipe;
-
-        // Patch the basic recipe details to the form
-        this.recipeForm.patchValue(this.recipe);
-
-        // Load ingredients starting from the second one
-        const ingredientsArray = this.recipeForm.get('ingredients') as FormArray;
-        this.recipe.ingredients.slice(1).forEach((ingredient: Ingredient)  => {
-          ingredientsArray.push(this.formBuilder.group({
-            name: [ingredient.name, Validators.required],
-            amount: [ingredient.amount, Validators.required],
-            amount_unit: [ingredient.amount_unit, Validators.required]
-          }));
-        });
-
-        // Load directions starting from the second one
-        const directionsArray = this.recipeForm.get('directions') as FormArray;
-        this.recipe.directions.slice(1).forEach((direction: Direction)  => {
-          directionsArray.push(this.formBuilder.group({
-            description: [direction.description, Validators.required]
-          }));
-        });
-
-
-        // // Select previously selected sections
-        // if (this.sections_exist && this.recipe.section_ids.length > 0) {
-        //   this.recipeForm.controls['section_ids'].setValue(this.recipe.section_ids);
-        // }
-
-        console.log("loading recipes section_ids:", this.recipe.section_ids)
-        // const selectedSections = this.recipe.section_ids;
-        // if (selectedSections.length > 0) {
-        //   this.recipeForm.controls['section_ids'].setValue(selectedSections);
-        // } else {
-        //   this.recipeForm.controls['section_ids'].setValue([]); // Set to empty array if no sections selected
-        // }
-
+        this.patchRecipe(response.section_ids);
       },
       error: (error) => {
         console.error('Error getting recipe details:', error);
@@ -103,7 +64,36 @@ export class NewrecipePage implements OnInit {
     })
   }
 
+  patchRecipe(ids: number[]) {
+    if (!this.recipe) {
+      return;
+    }
+    console.log("in patchRecipe")
+
+    this.recipeForm.patchValue({
+      title: this.recipe.title,
+      time: this.recipe.time,
+      time_unit: this.recipe.time_unit,
+      section_ids: ids,
+    });
+
+    // Load ingredients
+    const ingredientsArray = this.recipeForm.get('ingredients') as FormArray;
+    this.recipe.ingredients.forEach((ingredient: Ingredient)  => {
+      ingredientsArray.push(this.createIngredientFormGroup(ingredient.name, ingredient.amount, ingredient.amount_unit));
+    });
+
+    // Load directions
+    const directionsArray = this.recipeForm.get('directions') as FormArray;
+    this.recipe.directions.forEach((direction: Direction)  => {
+      directionsArray.push(this.createDirectionFormGroup(direction.description));
+    });
+  }
+
+
   saveRecipe() {
+    this.disableButton = true;
+
     console.log('in saveRecipe')
 
     if (!this.sections_exist) {
@@ -112,19 +102,20 @@ export class NewrecipePage implements OnInit {
 
     if (this.recipeForm.invalid) {
       console.log('recipeForm is invalid');
+      this.disableButton = false;
       return;
     }
 
     console.log("save recipe recipeForm.value: ", this.recipeForm.value)
 
-
+    // edit api call
     if (this.edit) {
-      console.log("in edit statement, recipe.id = ", this.recipe.id.toString())
-      this.apiService.put_with_id<any>('recipes', this.recipe.id.toString(), this.recipeForm.value).subscribe({
+      console.log("in edit statement, recipe.id = ", this.recipe?.id.toString())
+      this.apiService.put_with_id<any>('recipes', this.recipe?.id.toString() || '', this.recipeForm.value).subscribe({
         next: (response) => {
           console.log(`Successful Response:`, response);
           this.recipeForm.reset();
-          this.goToRecipe(this.recipe.id);
+          this.goToRecipe(this.recipe?.id.toString() || '');
         },
         error: (error) => {
           console.error('unsuccessful', error);
@@ -132,6 +123,7 @@ export class NewrecipePage implements OnInit {
         complete: () => {}
       });
     } else {
+      // new recipe api call
       this.apiService.post<any>('recipes', this.recipeForm.value).subscribe({
         next: (response) => {
           console.log(`Successful Response:`, response);
@@ -153,33 +145,40 @@ export class NewrecipePage implements OnInit {
 
   cancel() {
     if (this.edit) {
-      this.goToRecipe(this.recipe.id);
+      this.goToRecipe(this.recipe?.id.toString() || '');
     } else {
       this.goHome()
     }
   }
 
+  loadSections() {
+    console.log('Loading sections...');
 
-  goHome(){
-    this._router.navigate(['/home'])
-  }
-
-  goToAccount() {
-    this._router.navigate(['/useraccount'])
-  }
-
-
-  createIngredientFormGroup(): FormGroup {
-    return this.formBuilder.group({
-      name: ['', Validators.required],
-      amount: ['', Validators.required],
-      amount_unit: ['', Validators.required]
+    this.apiService.get_all<{ sections: Section[] }>('sections').subscribe({
+      next: (response) => {
+        console.log('All sections response:', response);
+        this.sections = response.sections;
+        this.sections_exist = this.sections.length > 0;
+      },
+      error: (error) => {
+        console.error('Error getting all sections:', error);
+      },
+      complete: () => {},
     });
   }
 
-  createDirectionFormGroup(): FormGroup {
+
+  createIngredientFormGroup(name: string = '', amount: number | null = null, amount_unit: string = ''): FormGroup {
     return this.formBuilder.group({
-      description: ['', Validators.required]
+      name: [name, Validators.required],
+      amount: [amount, Validators.required],
+      amount_unit: [amount_unit, Validators.required]
+    });
+  }
+
+  createDirectionFormGroup(description: string = ''): FormGroup {
+    return this.formBuilder.group({
+      description: [description, Validators.required]
     });
   }
 
@@ -187,6 +186,12 @@ export class NewrecipePage implements OnInit {
     const ingredient = this.createIngredientFormGroup();
     this.ingredientsArray.push(ingredient);
   }
+
+  addDirection() {
+    const direction = this.createDirectionFormGroup();
+    this.directionsArray.push(direction);
+  }
+
 
   removeIngredient(index: number) {
     this.ingredientsArray.removeAt(index);
@@ -196,10 +201,6 @@ export class NewrecipePage implements OnInit {
     return this.recipeForm.get('ingredients') as FormArray;
   }
 
-  addDirection() {
-    const direction = this.createDirectionFormGroup();
-    this.directionsArray.push(direction);
-  }
 
   removeDirection(index: number) {
     this.directionsArray.removeAt(index);
@@ -210,24 +211,14 @@ export class NewrecipePage implements OnInit {
   }
 
 
-  loadSections() {
-    console.log('Loading sections...');
-
-    this.apiService.get_all<{ sections: Section[] }>('sections').subscribe({
-      next: (response) => {
-        console.log('All sections response:', response);
-        this.sections = response.sections;
-        if (this.sections.length > 0) {
-          this.sections_exist = true;
-        }
-      },
-      error: (error) => {
-        console.error('Error getting all sections:', error);
-      },
-      complete: () => {},
-    });
+  // navigation
+  goHome(){
+    this._router.navigate(['/home'])
   }
 
+  goToAccount() {
+    this._router.navigate(['/useraccount'])
+  }
 
   goToRecipe(recipe_id: string) {
     this._router.navigate(['/recipe', recipe_id])

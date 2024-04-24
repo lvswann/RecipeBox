@@ -1,11 +1,17 @@
 import { User, Section } from '.';
 
+export enum TimeUnit {
+  MINUTES = 'minutes',
+  HOURS = 'hours'
+}
+
 export interface Recipe {
   id: number;
   title: string;
-  time: string;
-  time_unit: string;
+  time: number;
+  time_unit: TimeUnit;
   pinned: boolean;
+  date: Date;
   ingredients: Ingredient[];
   directions: Direction[];
   sections: Section[];
@@ -16,7 +22,7 @@ export interface Recipe {
 export interface Ingredient {
   id: number;
   name: string;
-  amount: string;
+  amount: number;
   amount_unit: string;
   recipe_id: number;
   recipe: Recipe;

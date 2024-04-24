@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../auth/auth.service';
 import { ApiService } from '../services/api.service';
 import { Recipe, Section } from '../interfaces';
 
@@ -13,8 +11,10 @@ import { Recipe, Section } from '../interfaces';
 })
 
 export class HomePage implements OnInit {
-  sections: any[];
-  pinned_recipes: any[];
+  searchQuery: string = '';
+
+  sections: Section[] = [];
+  pinned_recipes: Recipe[] = [];
 
 
   public appPages = [
@@ -24,24 +24,21 @@ export class HomePage implements OnInit {
   ];
 
   constructor(
-    private http: HttpClient,
     private _router: Router,
-    private authService: AuthService,
     private apiService: ApiService,
-    ) {
-    this.sections = [];
-    this.pinned_recipes = [];
-  }
+    ) {}
 
   ngOnInit() {
     // maybe use different implementation
-    // load recipes everytime navigated to page
     this._router.events.subscribe(event => {
       // Check if it's a NavigationEnd event
       if (event instanceof NavigationEnd) {
-        // reload
-        this.loadSections();
-        this.loadPinnedRecipes();
+        // Check if the current route is the home page
+        if (event.url === '/' || event.url === '/home') {
+          // reload
+          this.loadSections();
+          this.loadPinnedRecipes();
+        }
       }
     });
   }
@@ -63,7 +60,7 @@ export class HomePage implements OnInit {
 
 
   loadPinnedRecipes() {
-    console.log('Loading recipes...');
+    console.log('Loading pinned recipes...');
 
     this.apiService.get_all<{ recipes: Recipe[] }>('recipes', '?pinned=true').subscribe({
       next: (response) => {
@@ -95,13 +92,11 @@ export class HomePage implements OnInit {
 
   goNewSection(){
     this._router.navigate(['/newsection'])
-
-    // sometimes does not work
-    this.loadSections();
   }
 
   ionChange(event: any) {
     console.log("search event: ", event.detail.value)
+    this.searchQuery = '';
     this._router.navigate(['/search', event.detail.value])
   }
 

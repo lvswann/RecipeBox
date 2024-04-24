@@ -1,7 +1,18 @@
 from .extensions import db, bcrypt
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from enum import Enum
+from datetime import datetime, timezone
 
+
+## Set predefined values
+class TimeUnit(Enum):
+    MINUTES = 'minutes'
+    HOURS = 'hours'
+
+
+
+## DB Models
 section_recipe = db.Table('section_recipe',
                     db.Column('section_id', db.Integer, db.ForeignKey('section.id')),
                     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id')),
@@ -43,9 +54,15 @@ class RefreshTokenBlocklist(db.Model):
 class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
-    time = db.Column(db.String(150), nullable=False)
-    time_unit = db.Column(db.String(150), nullable=False)
+    time = db.Column(db.Float, nullable=False)
+    time_unit = db.Column(db.Enum(TimeUnit), nullable=False)
     pinned = db.Column(db.Boolean, default=False)
+    date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+
+    # OR
+    # date = db.Column(
+    # db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc)
+    # )
 
     ingredients = db.relationship('Ingredient', back_populates='recipe', cascade="all, delete")
     directions = db.relationship('Direction', back_populates='recipe', cascade="all, delete")
@@ -63,11 +80,39 @@ class Recipe(db.Model):
 
     def __repr__(self):
         return f'<Recipe "{self.title}">'
+
+    def serialize(self):
+        serialized_recipe = {
+            'id': self.id,
+            'title': self.title,
+            'time': self.time,
+            'time_unit': self.time_unit.value,
+            'pinned': self.pinned,
+            'date': self.date,
+            'ingredients': [],
+            'directions': []
+        }
+
+        # Serialize ingredients
+        for ingredient in self.ingredients:
+            serialized_ingredient = {
+                'name': ingredient.name,
+                'amount': ingredient.amount,
+                'amount_unit': ingredient.amount_unit
+            }
+            serialized_recipe['ingredients'].append(serialized_ingredient)
+
+        # Serialize directions
+        serialized_directions = [{'description': direction.description} for direction in self.directions]
+        serialized_recipe['directions'] = serialized_directions
+
+        return serialized_recipe
+
     
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
-    amount = db.Column(db.String(150), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
     amount_unit = db.Column(db.String(150), nullable=False)
 
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
@@ -90,7 +135,15 @@ class Direction(db.Model):
 class Section(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
+    ###### not sure how long to make description
     description = db.Column(db.String(150), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    
+    # OR
+    # date = db.Column(
+    # db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc)
+    # )
+
     recipes = db.relationship('Recipe', secondary=section_recipe, back_populates='sections')
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -103,4 +156,14 @@ class Section(db.Model):
 
     def __repr__(self):
         return f'<Section "{self.title}">'
+
+
+    def serialize(self):
+        serialized_section = {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+        }
+        return serialized_section
+
 

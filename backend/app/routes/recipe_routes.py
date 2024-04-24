@@ -39,7 +39,7 @@ def create_recipe():
         title=data['title'],
         time=data['time'],
         time_unit=data['time_unit'],
-        user_id = db_user.id,
+        user_id=db_user.id,
     )
 
     # create ingredients and associate them with new recipe
@@ -116,33 +116,8 @@ def get_recipes():
 
 
     print("user_recipes: ", user_recipes)
-    serialized_recipes = []
 
-    for recipe in user_recipes:
-        serialized_recipe = {
-            'id': recipe.id,
-            'title': recipe.title,
-            'time': recipe.time,
-            'time_unit': recipe.time_unit,
-            'pinned': recipe.pinned,
-            'ingredients': [],
-            'directions': []
-        }
-
-        # Serialize ingredients
-        for ingredient in recipe.ingredients:
-            serialized_ingredient = {
-                'name': ingredient.name,
-                'amount': ingredient.amount,
-                'amount_unit': ingredient.amount_unit
-            }
-            serialized_recipe['ingredients'].append(serialized_ingredient)
-
-        # Serialize directions
-        serialized_directions = [{'description': direction.description} for direction in recipe.directions]
-        serialized_recipe['directions'] = serialized_directions
-
-        serialized_recipes.append(serialized_recipe)
+    serialized_recipes = [recipe.serialize() for recipe in user_recipes]
 
     return jsonify({'recipes': serialized_recipes}), 200
 
@@ -176,43 +151,14 @@ def get_recipe(recipe_id):
     else:
         return jsonify({'error': 'Cannot find user in database'}), 404
     
-
-    # Check if recipe exists
-    if recipe:
-        # Serialize recipe details
-        serialized_recipe = {
-            'id': recipe.id,
-            'title': recipe.title,
-            'time': recipe.time,
-            'time_unit': recipe.time_unit,
-            'pinned': recipe.pinned,
-            'ingredients': [],
-            'directions': [],
-            'section_ids': []
-        }
-
-        # Serialize ingredients
-        for ingredient in recipe.ingredients:
-            serialized_ingredient = {
-                'name': ingredient.name,
-                'amount': ingredient.amount,
-                'amount_unit': ingredient.amount_unit
-            }
-            serialized_recipe['ingredients'].append(serialized_ingredient)
-
-        # Serialize directions
-        serialized_directions = [{'description': direction.description} for direction in recipe.directions]
-        serialized_recipe['directions'] = serialized_directions
-
-        # Serialize sections
-
-        for section in recipe.sections:
-            serialized_recipe['section_ids'].append(section.id)
-
-    else:
+    if not recipe:
         return jsonify({'error': 'Recipe not found'}), 404
 
-    return jsonify({'recipe': serialized_recipe}), 200
+    serialized_recipe = recipe.serialize()
+    section_ids = [section.id for section in recipe.sections]
+
+    print(serialized_recipe)
+    return jsonify({'recipe': serialized_recipe, 'section_ids': section_ids}), 200
 
 
 @bp.route('/recipes/<int:recipe_id>/', methods=['DELETE'])
@@ -285,7 +231,6 @@ def edit_recipe(recipe_id):
     recipe.title = data['title']
     recipe.time = data['time']
     recipe.time_unit = data['time_unit']
-    recipe.pinned = data['pinned']
 
     Ingredient.query.filter(Ingredient.recipe_id == recipe.id).delete()
     Direction.query.filter(Direction.recipe_id == recipe.id).delete()

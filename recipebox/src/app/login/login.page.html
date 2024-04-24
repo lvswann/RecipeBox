@@ -43,7 +43,7 @@
         <br>
 
         <!-- Submit button -->
-        <ion-button type="submit" expand="block">{{ isLogin ? 'Log In' : 'Register' }}</ion-button>
+        <ion-button [disabled]="disableButton" type="submit" expand="block">{{ isLogin ? 'Log In' : 'Register' }}</ion-button>
       </form>
 
       <!-- Toggle button -->

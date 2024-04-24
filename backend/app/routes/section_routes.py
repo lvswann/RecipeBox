@@ -36,8 +36,8 @@ def create_section():
     new_section = Section(
         title=data['title'],
         description=data['description'],
-        user = db_user,
-        user_id = db_user.id
+        user=db_user,
+        user_id=db_user.id,
     )
 
     # save to database
@@ -76,18 +76,9 @@ def get_sections():
     else:
         return jsonify({'error': 'Cannot find user in database'}), 401
 
-
-    serialized_sections = []
     print('User sections: ', user_sections)
 
-    for section in user_sections:
-        serialized_section = {
-            'id': section.id,
-            'title': section.title,
-            'description': section.description,
-        }
-        
-        serialized_sections.append(serialized_section)
+    serialized_sections = [section.serialize() for section in user_sections]
 
     return jsonify({'sections': serialized_sections}), 200
 
@@ -122,16 +113,10 @@ def get_section(section_id):
     
 
     # Check if section exists
-    if section:
-        # Serialize recipe details
-        serialized_section = {
-            'id': section.id,
-            'title': section.title,
-            'description': section.description,
-        }
-
-    else:
+    if not section:
         return jsonify({'error': 'Section not found'}), 404
+
+    serialized_section = section.serialize()
 
     return jsonify({'section': serialized_section}), 200
 
