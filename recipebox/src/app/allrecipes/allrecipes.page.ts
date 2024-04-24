@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
+import { ApiService } from '../services/api.service';
+import { Recipe } from '../interfaces';
 
 @Component({
   selector: 'app-allrecipes',
@@ -15,6 +17,7 @@ export class AllrecipesPage implements OnInit {
     private http: HttpClient,
     private _router: Router,
     private authService: AuthService,
+    private apiService: ApiService,
     ) {
     this.recipes = []
   }
@@ -36,31 +39,17 @@ export class AllrecipesPage implements OnInit {
   loadRecipes() {
     console.log('Loading recipes...');
 
-    this.authService.userInfo$.subscribe(user => {
-      if (user && user.sub) {
-        const token = user.sub
-
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        };
-
-        this.http.get<any>('http://127.0.0.1:5000/recipes/', { headers })
-          .subscribe({
-            next: (response) => {
-              console.log('Recipes response:', response);
-              this.recipes = response.recipes;
-            },
-            error: (error) => {
-              console.error('Error getting recipes:', error);
-              // alert('Getting all recipes failed');
-            },
-            complete: () => {},
-          });
-      }
+    this.apiService.get_all<{ recipes: Recipe[] }>('recipes').subscribe({
+      next: (response) => {
+        console.log('All recipes response:', response);
+        this.recipes = response.recipes;
+      },
+      error: (error) => {
+        console.error('Error getting all recipes:', error);
+      },
+      complete: () => {},
     });
   }
-
 
   goToAccount() {
     this._router.navigate(['/useraccount'])

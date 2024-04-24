@@ -15,7 +15,7 @@ def create_app():
     login_manager.init_app(app)
     jwt.init_app(app)
 
-    from .routes import recipe_routes, section_routes, account_routes, auth_routes
+    from .routes import recipe_routes, section_routes, account_routes, auth_routes, features_routes
     # from . import auth
 
     # register blueprints 
@@ -23,6 +23,7 @@ def create_app():
     app.register_blueprint(section_routes.bp)
     app.register_blueprint(account_routes.bp)
     app.register_blueprint(auth_routes.bp)
+    app.register_blueprint(features_routes.bp)
     # app.register_blueprint(auth.auth_bp)
 
     with app.app_context():

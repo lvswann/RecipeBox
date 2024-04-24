@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
-
+import { ApiService } from '../services/api.service';
+import { Section } from '../interfaces';
 
 @Component({
   selector: 'app-newsection',
@@ -12,6 +13,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class NewsectionPage implements OnInit {
 
+  edit: boolean = false;
+  section: any;
   sectionForm: FormGroup = this.formBuilder.group({
     title: ['', [Validators.required]],
     description: ['', Validators.required],
@@ -19,55 +22,86 @@ export class NewsectionPage implements OnInit {
 
   constructor(
     private _router: Router,
+    private route: ActivatedRoute,
     private http: HttpClient,
     public formBuilder: FormBuilder,
     private authService: AuthService,
+    private apiService: ApiService,
     ) { }
 
   ngOnInit() {
+    this.route.params.subscribe(params => {
+      const section_id = params['id'];
+      if (section_id) {
+        this.edit = true;
+        this.loadSection(section_id);
+      }
+    });
   }
 
-  saveSection() {
-    console.log("Form value:", this.sectionForm.value);
-    console.log('Form validity:', this.sectionForm.valid);
-    console.log('Form errors:', this.sectionForm.errors);
 
+
+  saveSection() {
 
     if (this.sectionForm.invalid) {
       console.log('sectionForm is invalid');
       return;
     }
 
-    this.authService.userInfo$.subscribe(user => {
-      if (user && user.sub) {
-        const token = user.sub
+    if (this.edit) {
+      this.apiService.put_with_id<any>('sections', this.section.id, this.sectionForm.value).subscribe({
+        next: (response) => {
+          console.log(`Successful Response:`, response);
+          this.sectionForm.reset();
+          this.goToSection(this.section.id);
+        },
+        error: (error) => {
+          console.error('unsuccessful', error);
+        },
+        complete: () => {}
+      });
+    } else {
+      this.apiService.post<any>('sections', this.sectionForm.value).subscribe({
+        next: (response) => {
+          console.log(`Successful Response:`, response);
+          this.sectionForm.reset();
+          this.goToSection(response.section_id);
+        },
+        error: (error) => {
+          console.error('unsuccessful', error);
+        },
+        complete: () => {}
+      });
+    }
+  }
 
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        };
 
-        // Send POST request with access token in headers
-        this.http.post<any>('http://127.0.0.1:5000/sections/', this.sectionForm.value, { headers })
-        .subscribe({
-          next: (response) => {
-            console.log('Successful new_section POST Response:', response);
-            this.sectionForm.reset()
-            // alert("Successful new_section POST")
-            // Redirect to single section page or any other page
+  loadSection(section_id: string) {
+    this.apiService.get_with_id<{ section: Section }>('sections', section_id.toString()).subscribe({
+      next: (response) => {
+        console.log('Section:', response.section);
+        this.section = response.section;
 
-            // change to go straight to section page
-            this._router.navigate(['/home'])
-          },
-          error: (error) => {
-            console.error("POST error", error);
-          },
-          complete: () => { },
-        });
-      } else {
-        console.log('User not logged in');
-      }
-    });
+        // update form
+        this.sectionForm.patchValue(this.section)
+      },
+      error: (error) => {
+        console.error('Error getting section details:', error);
+      },
+      complete: () => {}
+    })
+  }
+
+  cancel() {
+    if (this.edit) {
+      this.goToSection(this.section.id);
+    } else {
+      this.goHome()
+    }
+  }
+
+  goToSection(section_id: string) {
+    this._router.navigate(['/section', section_id])
   }
 
   goToAccount() {

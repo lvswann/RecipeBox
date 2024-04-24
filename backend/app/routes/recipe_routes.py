@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from ..extensions import db
-from ..models import User, Recipe, Ingredient, Direction, Section
+from ..models import User, Recipe, Ingredient, Direction, Section, section_recipe
 from flask_jwt_extended import jwt_required, get_jwt_identity, decode_token
 
 
@@ -26,7 +26,7 @@ def create_recipe():
 
     # Check if the user's public ID matches the requested public ID
     if user_public_id != requested_public_id:
-        return jsonify({'error': 'Unauthorized access'}), 401
+        return jsonify({'error': 'Unauthorized access'}), 404
 
     db_user = User.query.filter_by(public_id=user_public_id).first()
 
@@ -39,8 +39,6 @@ def create_recipe():
         title=data['title'],
         time=data['time'],
         time_unit=data['time_unit'],
-        pinned=data['pinned'],
-        user = db_user,
         user_id = db_user.id,
     )
 
@@ -62,7 +60,9 @@ def create_recipe():
 
     # get sections
     section_ids = data['section_ids']
+    print("create recipe: sections loop")
     for section_id in section_ids:
+        print("section_id: ", section_id)
         section = Section.query.filter_by(id=section_id, user_id=db_user.id).first()
         if section:
             new_recipe.sections.append(section)
@@ -71,7 +71,7 @@ def create_recipe():
     db.session.add(new_recipe)
     db.session.commit()
 
-    return jsonify({'message': 'Recipe was saved', 'data': data})
+    return jsonify({'message': 'Recipe was saved', 'recipe_id': new_recipe.id})
 
 
 @bp.route('/recipes/', methods=['GET'])
@@ -80,7 +80,7 @@ def create_recipe():
 def get_recipes():
     # get query params
     pinned = request.args.get('pinned')
-
+    section_id = request.args.get('section_id')
 
     # Get current user's public ID from JWT token
     user_public_id = get_jwt_identity()
@@ -95,7 +95,7 @@ def get_recipes():
 
     # Check if the user's public ID matches the requested public ID
     if user_public_id != requested_public_id:
-        return jsonify({'error': 'Unauthorized access'}), 401
+        return jsonify({'error': 'Unauthorized access'}), 404
 
     user = User.query.filter_by(public_id=user_public_id).first()
 
@@ -104,13 +104,18 @@ def get_recipes():
         if pinned == 'true':
             # retrieve pinned recipes associated with the user
             user_recipes = Recipe.query.filter_by(user=user, pinned=True).all()
+        elif section_id != None:
+            # retrieve recipes associated with the user and section
+            user_recipes = Recipe.query.filter(Recipe.sections.any(id=section_id, user=user)).all()
+
         else:
             # Retrieve recipes associated with the user
             user_recipes = Recipe.query.filter_by(user=user).all()
     else:
-        return jsonify({'error': 'Cannot find user in database'}), 401
+        return jsonify({'error': 'Cannot find user in database'}), 404
 
 
+    print("user_recipes: ", user_recipes)
     serialized_recipes = []
 
     for recipe in user_recipes:
@@ -160,7 +165,7 @@ def get_recipe(recipe_id):
 
     # Check if the user's public ID matches the requested public ID
     if user_public_id != requested_public_id:
-        return jsonify({'error': 'Unauthorized access'}), 401
+        return jsonify({'error': 'Unauthorized access'}), 404
 
     user = User.query.filter_by(public_id=user_public_id).first()
 
@@ -169,7 +174,7 @@ def get_recipe(recipe_id):
         # Retrieve the recipe associated with the user and recipe ID
         recipe = Recipe.query.filter_by(user=user, id=recipe_id).first()
     else:
-        return jsonify({'error': 'Cannot find user in database'}), 401
+        return jsonify({'error': 'Cannot find user in database'}), 404
     
 
     # Check if recipe exists
@@ -182,7 +187,8 @@ def get_recipe(recipe_id):
             'time_unit': recipe.time_unit,
             'pinned': recipe.pinned,
             'ingredients': [],
-            'directions': []
+            'directions': [],
+            'section_ids': []
         }
 
         # Serialize ingredients
@@ -197,6 +203,11 @@ def get_recipe(recipe_id):
         # Serialize directions
         serialized_directions = [{'description': direction.description} for direction in recipe.directions]
         serialized_recipe['directions'] = serialized_directions
+
+        # Serialize sections
+
+        for section in recipe.sections:
+            serialized_recipe['section_ids'].append(section.id)
 
     else:
         return jsonify({'error': 'Recipe not found'}), 404
@@ -217,7 +228,7 @@ def delete_recipe(recipe_id):
         # Retrieve the recipe associated with the user and recipe ID
         recipe = Recipe.query.filter_by(user=user, id=recipe_id).first()
     else:
-        return jsonify({'error': 'Cannot find user in database'}), 401
+        return jsonify({'error': 'Cannot find user in database'}), 404
     
     if not recipe:
         return jsonify({'error': 'Recipe not found'}), 404
@@ -232,24 +243,88 @@ def delete_recipe(recipe_id):
 
 
 ## EDITING RECIPES   
-@bp.route('/recipes/pin/', methods=['POST'])
+@bp.route('/recipes/<int:recipe_id>/', methods=['PUT'])
 @cross_origin()
 @jwt_required()
-def pin_recipe():
-    # code for confirming user
+def edit_recipe(recipe_id):
+
+    # similar to create_recipe
+
+    user_public_id = get_jwt_identity()
+
+    # maybe add header part
+    print("Recipe_id: ", recipe_id)
+
+    user = User.query.filter_by(public_id=user_public_id).first()
+    print("Current User: ", user)
 
 
-    data = request.json
-    recipe_id = data['id']
-    pinned = data['pinned']
+    # Check if the user exists
+    if not user:
+        return jsonify({'error': 'Cannot find user in database'}), 404
 
-    # Get the recipe from the database
-    recipe = Recipe.query.get(recipe_id)
+
+    # Retrieve the recipe associated with the user and recipe ID
+    recipe = Recipe.query.filter_by(user=user, id=recipe_id).first()
     if not recipe:
         return jsonify({'error': 'Recipe not found'}), 404
 
-    # Update pin
-    recipe.pinned = pinned
+    print("Current recipe: ", recipe)
+    print("Recipe id: ", recipe.id)
+    data = request.json
+
+    # Check if the request contains the 'pinned' key
+    if 'update_pinned' in data:
+        # Update only the 'pinned' value of the recipe
+        recipe.pinned = data['update_pinned']
+        db.session.commit()
+        return jsonify({'message': 'Recipe pin updated'}), 200
+
+
+    # update data
+    recipe.title = data['title']
+    recipe.time = data['time']
+    recipe.time_unit = data['time_unit']
+    recipe.pinned = data['pinned']
+
+    Ingredient.query.filter(Ingredient.recipe_id == recipe.id).delete()
+    Direction.query.filter(Direction.recipe_id == recipe.id).delete()
+    recipe.sections.clear()
+
+    # Update ingredients
+    for ingredient_data in data['ingredients']:
+        new_ingredient = Ingredient(
+            name=ingredient_data['name'],
+            amount=ingredient_data['amount'],
+            amount_unit=ingredient_data['amount_unit'],
+            recipe_id=recipe.id,
+        )
+        print("name: ", ingredient_data['name'])            
+        print("amount: ", ingredient_data['amount'])
+        print("amount_unit: ", ingredient_data['amount_unit'])
+        print("recipe_id: ", recipe.id)
+
+        recipe.ingredients.append(new_ingredient)
+
+    # Update directions
+    for direction_data in data['directions']:
+        new_direction = Direction(description=direction_data['description'], recipe_id=recipe.id)
+        recipe.directions.append(new_direction)
+
+    print("After update: ", recipe.directions)
+
+    # Update sections
+    section_ids = data['section_ids']
+    if section_ids != []:
+        for section_id in section_ids:
+            section = Section.query.get(section_id)
+            if section:
+                recipe.sections.append(section)
+
+
+    # Save changes
     db.session.commit()
 
-    return jsonify({'message': 'Recipe pin updated', 'pinned': pinned}), 200
+    return jsonify({'message': 'Recipe updated successfully'}), 200
+
+

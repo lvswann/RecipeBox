@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <img class="logo-margin" button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
-    <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
+    <ion-searchbar class="search" enterkeyhint="search" debounce="1000" (ionChange)="ionChange($event)"></ion-searchbar>
     <ion-button class="account-margin" button (click)="goToAccount()">Account</ion-button>
   </ion-toolbar>
 </ion-header>

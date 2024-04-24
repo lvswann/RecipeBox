@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
+import { Recipe } from '../interfaces';
 
 @Component({
   selector: 'app-singlerecipe',
@@ -13,7 +15,8 @@ export class SinglerecipePage implements OnInit {
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
+    private apiService: ApiService,
   ) { }
 
   ngOnInit() {
@@ -24,22 +27,22 @@ export class SinglerecipePage implements OnInit {
   }
 
   loadRecipe(recipe_id: string) {
-
-    this.http.get<any>(`http://127.0.0.1:5000/recipes/${recipe_id}/`)
-    .subscribe({
+    this.apiService.get_with_id<{ recipe: Recipe }>('recipes', recipe_id.toString()).subscribe({
       next: (response) => {
         console.log('Recipe:', response.recipe);
         this.recipe = response.recipe;
       },
       error: (error) => {
         console.error('Error getting recipe details:', error);
-        // alert('Failed to fetch recipe details');
-        },
+      },
       complete: () => {}
     })
   }
 
+
   editRecipe() {
+    this._router.navigate(['/newrecipe', this.recipe.id])
+    // this.loadRecipe(recipe_id);
 
   }
 
@@ -48,16 +51,14 @@ export class SinglerecipePage implements OnInit {
   }
 
   deleteRecipe() {
-    this.http.delete<any>(`http://127.0.0.1:5000/recipes/${this.recipe.id}/`)
-    .subscribe({
+    this.apiService.delete_with_id('recipes', this.recipe.id.toString()).subscribe({
       next: (response) => {
         console.log('Recipe deleted successfully');
-        this.goHome()
+        this.goHome();
       },
       error: (error) => {
         console.error('Recipe deletion unsuccessful:', error);
-        // alert('Failed to delete recipe');
-        },
+      },
       complete: () => {}
     })
   }
@@ -65,18 +66,15 @@ export class SinglerecipePage implements OnInit {
   updatePin() {
     this.recipe.pinned = !this.recipe.pinned
 
-    this.http.post<any>('http://127.0.0.1:5000/recipes/pin/', { id: this.recipe.id, pinned: this.recipe.pinned })
-    .subscribe({
+    this.apiService.put_with_id<any>('recipes', this.recipe.id, {update_pinned: this.recipe.pinned}).subscribe({
       next: (response) => {
         console.log('Recipe pin updated');
       },
       error: (error) => {
         console.error('Error updating recipe pin:', error);
-        // alert('Failed to update recipe pin');
-        },
+      },
       complete: () => {}
-    })
-
+    });
   }
 
   goHome(){

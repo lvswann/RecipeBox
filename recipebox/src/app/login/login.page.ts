@@ -27,55 +27,34 @@ export class LoginPage implements OnInit {
   ngOnInit() {
   }
 
-  login(): void {
+  async login() {
     if (this.loginForm.invalid) {
       console.log('loginForm is invalid');
       return;
     }
 
-    // or this.loginForm
-    this.authService.loginUser(this.loginForm.value).subscribe({
-      next: (response) => {
-        // alert('Login Successful');
+    try {
+      await this.authService.login(this.loginForm.value);
+      // this.loginForm.reset();
 
-        this.loginForm.reset()
-        this._router.navigate(['/home'])
-      },
-      error: (error) => {
-        console.error('Login Failed:', error);
-        // alert('Login Failed: ' + error.message); // Display detailed error message
-      },
-      complete: () => {},
-    });
+    } catch (error) {
+      // Handle login errors, such as displaying an error message to the user
+      console.error("Login failed:", error);
+    }
   }
 
-  register(): void {
+
+
+  async register() {
     if (this.loginForm.invalid) return;
 
-    // or this.loginForm
-    this.authService.registerUser(this.loginForm.value).subscribe({
-      next: (response) => {
-        console.log('Registration Successful');
-        // alert('Registration Successful');
+    try {
+      await this.authService.register(this.loginForm.value);
 
-        // login user
-        this.authService.loginUser(this.loginForm.value).subscribe({
-          next: () => {
-            this._router.navigate(['/home']);
-          },
-          error: () => {
-            console.error('Login Failed');
-
-            // alert('Login Failed');
-          }
-        });
-      },
-      error: (error) => {
-        console.log('Registration Failed');
-        // alert('Registration Failed');
-      },
-      complete: () => {},
-    });
+    } catch (error) {
+      // Handle login errors, such as displaying an error message to the user
+      console.error("Registration failed:", error);
+    }
   }
 
 

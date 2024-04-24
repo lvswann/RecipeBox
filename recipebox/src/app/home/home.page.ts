@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
-
-
+import { ApiService } from '../services/api.service';
+import { Recipe, Section } from '../interfaces';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +26,8 @@ export class HomePage implements OnInit {
   constructor(
     private http: HttpClient,
     private _router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private apiService: ApiService,
     ) {
     this.sections = [];
     this.pinned_recipes = [];
@@ -45,81 +46,36 @@ export class HomePage implements OnInit {
     });
   }
 
-
   loadSections() {
     console.log('Loading sections...');
 
-    this.authService.userInfo$.subscribe(user => {
-      if (user && user.sub) {
-        const token = user.sub
-
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        };
-
-        this.http.get<any>('http://127.0.0.1:5000/sections/', { headers })
-          .subscribe({
-            next: (response) => {
-              console.log('Sections response:', response);
-              this.sections = response.sections;
-            },
-            error: (error) => {
-              console.error('Error getting sections:', error);
-              // alert('Getting all sections failed');
-            },
-            complete: () => {},
-          });
-      }
-    });
-  }
-
-  loadPinnedRecipes() {
-    console.log('Loading recipes...');
-
-    this.authService.userInfo$.subscribe(user => {
-      if (user && user.sub) {
-        const token = user.sub
-
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        };
-
-        this.http.get<any>('http://127.0.0.1:5000/recipes/?pinned=true', { headers })
-          .subscribe({
-            next: (response) => {
-              console.log('Recipes response:', response);
-
-              // get only pinned recipes
-              this.pinned_recipes = response.recipes;
-            },
-            error: (error) => {
-              console.error('Error getting recipes:', error);
-              // alert('Getting all recipes failed');
-            },
-            complete: () => {},
-          });
-      }
-    });
-  }
-
-  // Temporary
-  logout(): void {
-    this.authService.logout().subscribe({
+    this.apiService.get_all<{ sections: Section[] }>('sections').subscribe({
       next: (response) => {
-        // alert('Logout Successful');
-        this._router.navigate(['/login'])
+        console.log('All sections response:', response);
+        this.sections = response.sections;
       },
       error: (error) => {
-        console.error('Logout failed:', error)
-        // alert('Logout Failed: ' + error.message); // Display detailed error message
+        console.error('Error getting all sections:', error);
       },
       complete: () => {},
     });
   }
 
 
+  loadPinnedRecipes() {
+    console.log('Loading recipes...');
+
+    this.apiService.get_all<{ recipes: Recipe[] }>('recipes', '?pinned=true').subscribe({
+      next: (response) => {
+        console.log('All pinned recipes response:', response);
+        this.pinned_recipes = response.recipes;
+      },
+      error: (error) => {
+        console.error('Error getting all pinned recipes:', error);
+      },
+      complete: () => {},
+    });
+  }
 
   goToRecipe(recipe_id: string) {
     this._router.navigate(['/recipe', recipe_id])
@@ -142,6 +98,11 @@ export class HomePage implements OnInit {
 
     // sometimes does not work
     this.loadSections();
+  }
+
+  ionChange(event: any) {
+    console.log("search event: ", event.detail.value)
+    this._router.navigate(['/search', event.detail.value])
   }
 
 }
