@@ -1,20 +1,36 @@
 <ion-app>
-
-  <ion-menu contentId="main-content">
-      <ion-toolbar>
+  <ion-split-pane contentId="main-content">
+  <ion-menu style="max-width: 40px;" contentId="main-content" type="overlay">
+      <!-- <ion-toolbar>
         <img class="menu-logo-margin" button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />  
-      </ion-toolbar>
-    <ion-content class="ion-padding">
+      </ion-toolbar> -->
+    <ion-content >
       <ion-list id="nav-list">
+        <!-- <img class="menu-logo-margin" button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />   -->
+        <img button (click)="goHome()" class="menu-logo-margin" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />  
 
-        <ion-menu-toggle *ngFor="let p of appPages; let i = index">
+        <!-- <br>
+        <br>
+
+
+        <ion-searchbar [(ngModel)]="searchQuery" class="search" enterkeyhint="search" debounce="1000" (ionChange)="ionChange($event)"></ion-searchbar>
+
+        <br> -->
+
+        <ion-menu-toggle autoHide="false" *ngFor="let p of appPages; let i = index">
           <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
-            <!-- <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon> -->
+            <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'" color="primary"></ion-icon> 
             <ion-label>{{ p.title }}</ion-label>
           </ion-item>
         </ion-menu-toggle>
       </ion-list>
     </ion-content>
+
+    <ion-footer>
+      <ion-button class="account-margin" button fill="clear" (click)="goToAccount()">Account</ion-button> 
+
+    </ion-footer>
   </ion-menu>
   <ion-router-outlet id="main-content"></ion-router-outlet>
+</ion-split-pane>
 </ion-app>

@@ -44,6 +44,10 @@ export class SinglerecipePage implements OnInit {
     this._router.navigate(['/newrecipe', this.recipe?.id])
   }
 
+  goToAccount() {
+    this._router.navigate(['/useraccount'])
+  }
+
   deleteRecipe() {
     this.apiService.delete_with_id('recipes', this.recipe?.id.toString() || '').subscribe({
       next: (response) => {

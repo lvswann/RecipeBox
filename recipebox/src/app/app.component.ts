@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import {Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+
 
 @Component({
   selector: 'app-root',
@@ -8,14 +9,27 @@ import {Router} from '@angular/router';
 })
 export class AppComponent {
   public appPages = [
-    {title: 'All Recipes', url:'allrecipes', icon: 'list-outline'},
-    {title: "Add New Recipe", url:"newrecipe", icon: "add-outline"},
-    {title: "Add New Section", url:"newsection", icon: "add-outline"}
+
+    {title: "Add New Recipe", url:"newrecipe", icon: "fast-food"},
+    {title: "Add New Section", url:"newsection", icon: "file-tray-full"},
+    {title: 'All Recipes', url:'allrecipes', icon: 'list'}
   ];
 
   constructor(private _router: Router) { }
 
   goHome(){
     this._router.navigate(['/home'])
+  }
+
+  searchQuery: string = '';
+  
+  ionChange(event: any) {
+    console.log("search event: ", event.detail.value)
+    this.searchQuery = '';
+    this._router.navigate(['/search', event.detail.value])
+  }
+  
+  goToAccount() {
+    this._router.navigate(['/useraccount'])
   }
 }

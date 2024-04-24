@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { Recipe, Section } from '../interfaces';
+import { MenuController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-home',
@@ -26,6 +28,7 @@ export class HomePage implements OnInit {
   constructor(
     private _router: Router,
     private apiService: ApiService,
+    public menu: MenuController,
     ) {}
 
   ngOnInit() {
@@ -41,6 +44,10 @@ export class HomePage implements OnInit {
         }
       }
     });
+  }
+
+  ionViewWillEnter() {
+    this.menu.enable(true);
   }
 
   loadSections() {

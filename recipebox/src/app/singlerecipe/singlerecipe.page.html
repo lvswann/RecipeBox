@@ -5,6 +5,7 @@
     </ion-buttons>
     <img button class="logo-margin" (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
     <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
+    <ion-button class="account-margin" button (click)="goToAccount()">Account</ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -21,7 +22,7 @@
       <ion-card-title class="ion-text-right">{{ recipe.time }} {{ recipe.time_unit }}</ion-card-title> -->
       <ion-card-title>
         <div style="font-size: 25px">{{ recipe.title }}</div>
-        <div class="ion-text-right">{{ recipe.time }} {{ recipe.time_unit }}</div>
+        <div>{{ recipe.time }} {{ recipe.time_unit }}</div>
       </ion-card-title>
     </ion-card-header>
 
