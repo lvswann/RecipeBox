@@ -41,7 +41,7 @@
         <!-- maybe -->
         <br>
 
-        <ion-button type="submit" expand="block">Save</ion-button>
+        <ion-button [disabled]="disableButton" type="submit" expand="block">Save</ion-button>
         <ion-button (click)="cancel()" expand="block">Cancel</ion-button>
       </form>
     </ion-card-content>

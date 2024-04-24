@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {Router, ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 import { Recipe } from '../interfaces';
 
@@ -10,10 +9,9 @@ import { Recipe } from '../interfaces';
   styleUrls: ['./singlerecipe.page.scss'],
 })
 export class SinglerecipePage implements OnInit {
-  recipe: any;
+  recipe: Recipe | null = null;
 
   constructor(
-    private http: HttpClient,
     private route: ActivatedRoute,
     private _router: Router,
     private apiService: ApiService,
@@ -27,8 +25,10 @@ export class SinglerecipePage implements OnInit {
   }
 
   loadRecipe(recipe_id: string) {
-    this.apiService.get_with_id<{ recipe: Recipe }>('recipes', recipe_id.toString()).subscribe({
+    console.log("loading recipe...")
+    this.apiService.get_with_id<any>('recipes', recipe_id).subscribe({
       next: (response) => {
+        console.log('Load Recipe Response', response)
         console.log('Recipe:', response.recipe);
         this.recipe = response.recipe;
       },
@@ -41,13 +41,11 @@ export class SinglerecipePage implements OnInit {
 
 
   editRecipe() {
-    this._router.navigate(['/newrecipe', this.recipe.id])
-    // this.loadRecipe(recipe_id);
-
+    this._router.navigate(['/newrecipe', this.recipe?.id])
   }
 
   deleteRecipe() {
-    this.apiService.delete_with_id('recipes', this.recipe.id.toString()).subscribe({
+    this.apiService.delete_with_id('recipes', this.recipe?.id.toString() || '').subscribe({
       next: (response) => {
         console.log('Recipe deleted successfully');
         this.goHome();
@@ -60,9 +58,11 @@ export class SinglerecipePage implements OnInit {
   }
 
   updatePin() {
+    if (!this.recipe) return;
+
     this.recipe.pinned = !this.recipe.pinned
 
-    this.apiService.put_with_id<any>('recipes', this.recipe.id, {update_pinned: this.recipe.pinned}).subscribe({
+    this.apiService.put_with_id<any>('recipes', this.recipe?.id.toString() || '', {update_pinned: this.recipe.pinned}).subscribe({
       next: (response) => {
         console.log('Recipe pin updated');
       },

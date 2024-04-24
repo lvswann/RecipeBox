@@ -18,36 +18,30 @@
   <ion-card>
     <ion-card-header class="header"  color="primary">
       <ion-card-title class="ion-text-center">All Recipes</ion-card-title>
+
+      <!-- Sorting -->
+      <ion-item>
+        <ion-label>Sort By:</ion-label>
+        <ion-select [(ngModel)]="selectedSortingOption" (ionChange)="sortRecipes()">
+          <ion-select-option value="alphabetAsc">Alphabetical (A-Z)</ion-select-option>
+          <ion-select-option value="alphabetDesc">Alphabetical (Z-A)</ion-select-option>
+          <ion-select-option value="dateCreatedAsc">Date Created (Oldest first)</ion-select-option>
+          <ion-select-option value="dateCreatedDesc">Date Created (Newest first)</ion-select-option>
+          <ion-select-option value="timeToMakeAsc">Time to Make (Shortest first)</ion-select-option>
+          <ion-select-option value="timeToMakeDesc">Time to Make (Longest first)</ion-select-option>
+        </ion-select>
+      </ion-item>
+
     </ion-card-header>
 
     <ion-card-content>
       <ion-list class="recipe-list">
-        <ion-item *ngFor="let recipe of recipes" button (click)="goToRecipe(recipe.id)">
+        <ion-item *ngFor="let recipe of sortedRecipes" button (click)="goToRecipe(recipe.id.toString())">
           <ion-label>{{ recipe.title }}</ion-label>
           <ion-label class="ion-text-right">Time: {{recipe.time}} {{recipe.time_unit}}</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
-
-    <!-- <ion-card-content>
-      <ion-list class="recipe-list">
-        <ion-item button (click)="goRecipe()">
-          <ion-thumbnail slot="start">
-            <img alt="chicken" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
-          </ion-thumbnail>
-          <ion-label>Recipe One</ion-label>
-          <ion-label class="ion-text-right">Time 1</ion-label>
-        </ion-item>
-
-        <ion-item>
-          <ion-thumbnail slot="start">
-            <img alt="chicken" src="https://img.freepik.com/free-photo/chicken-wings-barbecue-sweetly-sour-sauce-picnic-summer-menu-tasty-food-top-view-flat-lay_2829-6471.jpg?size=626&ext=jpg&ga=GA1.1.87170709.1707696000&semt=sph" />
-          </ion-thumbnail>
-          <ion-label>Recipe Two</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card-content> -->
-
   </ion-card>
 
 

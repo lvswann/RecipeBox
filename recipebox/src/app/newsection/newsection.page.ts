@@ -12,9 +12,10 @@ import { Section } from '../interfaces';
   styleUrls: ['./newsection.page.scss'],
 })
 export class NewsectionPage implements OnInit {
-
+  disableButton: boolean = false;
   edit: boolean = false;
-  section: any;
+  section: Section | null = null;;
+
   sectionForm: FormGroup = this.formBuilder.group({
     title: ['', [Validators.required]],
     description: ['', Validators.required],
@@ -42,18 +43,21 @@ export class NewsectionPage implements OnInit {
 
 
   saveSection() {
+    this.disableButton = true;
 
     if (this.sectionForm.invalid) {
       console.log('sectionForm is invalid');
+      this.disableButton = false;
+
       return;
     }
 
     if (this.edit) {
-      this.apiService.put_with_id<any>('sections', this.section.id, this.sectionForm.value).subscribe({
+      this.apiService.put_with_id<any>('sections', this.section?.id.toString() || '', this.sectionForm.value).subscribe({
         next: (response) => {
           console.log(`Successful Response:`, response);
           this.sectionForm.reset();
-          this.goToSection(this.section.id);
+          this.goToSection(this.section?.id.toString() || '');
         },
         error: (error) => {
           console.error('unsuccessful', error);
@@ -94,7 +98,7 @@ export class NewsectionPage implements OnInit {
 
   cancel() {
     if (this.edit) {
-      this.goToSection(this.section.id);
+      this.goToSection(this.section?.id.toString() || '');
     } else {
       this.goHome()
     }

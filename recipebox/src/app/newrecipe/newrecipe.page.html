@@ -32,17 +32,10 @@
           </ion-item>
 
           <ion-item>
-            <ion-input labelPlacement="floating" label="Time" formControlName="time" type="text"></ion-input>
-            <ion-input labelPlacement="floating" label="Time Unit" formControlName="time_unit" type="text"></ion-input>
-
-
-            <!-- <ion-label position="floating">Time</ion-label>
-            <ion-input formControlName="time" type="text"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">Time Unit</ion-label>
-            <ion-input formControlName="time_unit" type="text"></ion-input> -->
+            <ion-input labelPlacement="floating" label="Time" formControlName="time" type="number"></ion-input>
+            <ion-select labelPlacement="floating" label="Time Unit" formControlName="time_unit">
+              <ion-select-option *ngFor="let unit of timeUnits" [value]="unit">{{ unit }}</ion-select-option>
+            </ion-select>
           </ion-item>
 
 
@@ -52,7 +45,7 @@
           <div formArrayName="ingredients">
             <ion-item *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
               <ion-input labelPlacement="floating" label="Ingredient" formControlName="name" type="text"></ion-input>
-              <ion-input labelPlacement="floating" label="Amount" formControlName="amount" type="text"></ion-input>
+              <ion-input labelPlacement="floating" label="Amount" formControlName="amount" type="number"></ion-input>
               <ion-input labelPlacement="floating" label="Unit" formControlName="amount_unit" type="text"></ion-input>
 
               <ion-button (click)="removeIngredient(i)" style="font-size: 25px" fill="clear">-</ion-button>
@@ -90,7 +83,7 @@
         <!-- maybe -->
         <br>
 
-        <ion-button type="submit" expand="block">Save</ion-button>
+        <ion-button [disabled]="disableButton" type="submit" expand="block">Save</ion-button>
         <ion-button (click)="cancel()" expand="block">Cancel</ion-button>
       </form>
     </ion-card-content>

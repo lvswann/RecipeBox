@@ -25,14 +25,41 @@
         {{ searchType === 'recipes' ? 'Show Sections' : 'Show Recipes' }}
       </ion-button>
 
-      <!-- Message for no results-->
-      <ion-item class="ion-text-center" *ngIf="getResults().length === 0">
-        No {{ searchType === 'recipes' ? 'recipes' : 'sections' }} found.
+      <!-- Select dropdown for sorting -->
+      <ion-item>
+        <ion-label>Sort By</ion-label>
+        <ion-select [(ngModel)]="selectedSortingOption" (ionChange)="sort()">
+          <ion-select-option value="alphabetAsc">Alphabetically (A-Z)</ion-select-option>
+          <ion-select-option value="alphabetDesc">Alphabetically (Z-A)</ion-select-option>
+          <ion-select-option value="dateCreatedAsc">Date Created (Oldest First)</ion-select-option>
+          <ion-select-option value="dateCreatedDesc">Date Created (Newest First)</ion-select-option>
+          <ion-select-option value="timeToMakeAsc" *ngIf="searchType === 'recipes'">Time to Make (Shortest First)</ion-select-option>
+          <ion-select-option value="timeToMakeDesc" *ngIf="searchType === 'recipes'">Time to Make (Longest First)</ion-select-option>
+        </ion-select>
       </ion-item>
 
-      <ion-list class="result-list">
-        <ion-item *ngFor="let result of getResults()" (click)="goToResult(result)">
+
+
+      <!-- Message for no results-->
+    <!-- better method.... -->
+      <ion-item class="ion-text-center" *ngIf="searchType === 'recipes' && sortedRecipes === []">
+        No sections found.
+      </ion-item>
+      <ion-item class="ion-text-center" *ngIf="searchType === 'sections' && sortedSections === []">
+        No recipes found.
+      </ion-item>
+
+      <ion-list class="result-list" *ngIf="searchType === 'recipes'">
+        <ion-item *ngFor="let result of sortedRecipes" (click)="goToResult(result.id.toString())">
           <ion-label>{{ result.title }}</ion-label>
+          <!-- maybe more data?? -->
+        </ion-item>
+      </ion-list>
+
+      <ion-list class="result-list" *ngIf="searchType === 'sections'">
+        <ion-item *ngFor="let result of sortedSections" (click)="goToResult(result.id.toString())">
+          <ion-label>{{ result.title }}</ion-label>
+          <!-- maybe more data?? -->
         </ion-item>
       </ion-list>
     </ion-card-content>

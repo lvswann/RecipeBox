@@ -45,15 +45,7 @@ def search():
     print("recipes: ", recipes)
     print("sections: ", sections)
 
-    serialized_recipes = [{
-        'id': recipe.id,
-        'title': recipe.title,
-    } for recipe in recipes]
-
-    serialized_sections = [{
-        'id': section.id,
-        'title': section.title,
-    } for section in sections]
-
+    serialized_recipes = [recipe.serialize() for recipe in recipes]
+    serialized_sections = [section.serialize() for section in sections]
 
     return jsonify({'recipes': serialized_recipes, 'sections': serialized_sections})
