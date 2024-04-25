@@ -23,20 +23,17 @@
     <ion-card-content>
       <form [formGroup]="loginForm" (ngSubmit)="isLogin ? login() : register()">
         <ion-list>
-          <ion-item *ngIf="!isLogin">
+          <ion-item *ngIf="!isLogin" class="input">
           <!-- <ion-item> -->
-            <ion-label position="floating">Name</ion-label>
-            <ion-input formControlName="username" type="text"></ion-input>
+            <ion-input labelPlacement="floating" label="Name" formControlName="username" type="text"></ion-input>
           </ion-item>
 
-          <ion-item>
-            <ion-label position="floating">Email</ion-label>
-            <ion-input formControlName="email" type="email"></ion-input>
+          <ion-item class="input">
+            <ion-input labelPlacement="floating" label="Email" formControlName="email" type="email"></ion-input>
           </ion-item>
 
-          <ion-item>
-            <ion-label position="floating">Password</ion-label>
-            <ion-input formControlName="password" type="password"></ion-input>
+          <ion-item class="input">
+            <ion-input labelPlacement="floating" label="Password" formControlName="password" type="password"></ion-input>
           </ion-item>
         </ion-list>
 
@@ -47,23 +44,6 @@
       </form>
 
       <!-- Toggle button -->
-
-      <style>
-        .container {
-          height: 20px;
-          position: relative;
-        }
-        
-        .center {
-          margin: 0;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          -ms-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-        }
-        </style>
-        
 
       <div class="container">
         <div class="center">

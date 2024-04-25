@@ -30,7 +30,7 @@
 
           <ion-item>
             <ion-input style="margin-right: 10px;" labelPlacement="floating" label="Time" formControlName="time" type="number"></ion-input>
-            <ion-select style="min-width: 150px;" labelPlacement="floating" label="Time Unit" formControlName="time_unit">
+            <ion-select style="min-width: 150px;" interface="popover" labelPlacement="floating" label="Time Unit" formControlName="time_unit">
               <ion-select-option *ngFor="let unit of timeUnits" [value]="unit">{{ unit }}</ion-select-option>
             </ion-select>
           </ion-item>

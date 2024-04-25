@@ -1,6 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>search</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button color="primary"></ion-menu-button>
+    </ion-buttons>
+    <!-- <img button class="logo-margin" (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" /> -->
+    <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
+    <!-- <ion-button class="account-margin" button (click)="goToAccount()">Account</ion-button> -->
   </ion-toolbar>
 </ion-header>
 
@@ -20,15 +25,16 @@
 
 
     <ion-card-content>
+
+      <ion-row>
       <!-- Toggle button to switch between recipes and sections -->
-      <ion-button expand="block" (click)="toggleSearchType()">
+      <ion-button style="min-width: 300;" (click)="toggleSearchType()">
         {{ searchType === 'recipes' ? 'Show Sections' : 'Show Recipes' }}
       </ion-button>
 
       <!-- Select dropdown for sorting -->
-      <ion-item>
-        <ion-label>Sort By</ion-label>
-        <ion-select [(ngModel)]="selectedSortingOption" (ionChange)="sort()">
+      <ion-item style="min-width: 400px;">
+        <ion-select [(ngModel)]="selectedSortingOption" (ionChange)="sort()" interface="popover"  label="Sort By:" label-placement="floating">
           <ion-select-option value="alphabetAsc">Alphabetically (A-Z)</ion-select-option>
           <ion-select-option value="alphabetDesc">Alphabetically (Z-A)</ion-select-option>
           <ion-select-option value="dateCreatedAsc">Date Created (Oldest First)</ion-select-option>
@@ -37,7 +43,9 @@
           <ion-select-option value="timeToMakeDesc" *ngIf="searchType === 'recipes'">Time to Make (Longest First)</ion-select-option>
         </ion-select>
       </ion-item>
-
+    </ion-row>
+            
+      <br>
 
 
       <!-- Message for no results-->
@@ -50,14 +58,14 @@
       </ion-item>
 
       <ion-list class="result-list" *ngIf="searchType === 'recipes'">
-        <ion-item *ngFor="let result of sortedRecipes" (click)="goToResult(result.id.toString())">
+        <ion-item button *ngFor="let result of sortedRecipes" (click)="goToResult(result.id.toString())">
           <ion-label>{{ result.title }}</ion-label>
           <!-- maybe more data?? -->
         </ion-item>
       </ion-list>
 
       <ion-list class="result-list" *ngIf="searchType === 'sections'">
-        <ion-item *ngFor="let result of sortedSections" (click)="goToResult(result.id.toString())">
+        <ion-item button *ngFor="let result of sortedSections" (click)="goToResult(result.id.toString())">
           <ion-label>{{ result.title }}</ion-label>
           <!-- maybe more data?? -->
         </ion-item>

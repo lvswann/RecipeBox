@@ -3,9 +3,9 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <img button class="logo-margin" (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+    <!-- <img button class="logo-margin" (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" /> -->
     <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
-    <ion-button  class="account-margin" button (click)="goToAccount()">Account</ion-button>
+    <!-- <ion-button  class="account-margin" button (click)="goToAccount()">Account</ion-button> -->
   </ion-toolbar>
 </ion-header>
 
@@ -16,7 +16,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-card color="secondary" *ngIf="section">
+  <ion-card *ngIf="section">
     <!-- <img side="start" style="width:200px;height:128px;" src="https://t4.ftcdn.net/jpg/02/86/17/89/360_F_286178925_8zk89O9uC5JJVPvqhvBMUpaRxp8AFXzD.jpg" /> -->
 
     <ion-card-header class="header" color="primary">
@@ -33,13 +33,22 @@
 
     <ion-card-content> -->
 
-      <ion-row>
+      <!-- <ion-row>
         <ion-card *ngFor="let recipe of recipes" button (click)="goToRecipe(recipe.id)">
           <ion-card-header>
             <ion-card-title>{{ recipe.title }}</ion-card-title>
           </ion-card-header>
         </ion-card>
-      </ion-row>
+      </ion-row> -->
+
+      <ion-list class="recipe-list">
+        <ion-item *ngFor="let recipe of recipes" button (click)="goToRecipe(recipe.id.toString())">
+          <ion-label>{{ recipe.title }}</ion-label>
+          <ion-label class="ion-text-right">Time: {{recipe.time}} {{recipe.time_unit}}</ion-label>
+        </ion-item>
+      </ion-list>
+
+      <br>
 
       <ion-button button (click)="editSection()" color="warning">Edit</ion-button>
       <ion-button button (click)="deleteSection()">Delete</ion-button>
