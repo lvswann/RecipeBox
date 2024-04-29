@@ -113,7 +113,7 @@ class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    amount_unit = db.Column(db.String(150), nullable=False)
+    amount_unit = db.Column(db.String(150))
 
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
     recipe = db.relationship('Recipe', back_populates='ingredients')
@@ -136,7 +136,7 @@ class Section(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
     ###### not sure how long to make description
-    description = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(150))
     date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     
     # OR

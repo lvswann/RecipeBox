@@ -18,7 +18,7 @@ export class NewsectionPage implements OnInit {
 
   sectionForm: FormGroup = this.formBuilder.group({
     title: ['', [Validators.required]],
-    description: ['', Validators.required],
+    description: [''],
   });
 
   constructor(
@@ -56,7 +56,6 @@ export class NewsectionPage implements OnInit {
       this.apiService.put_with_id<any>('sections', this.section?.id.toString() || '', this.sectionForm.value).subscribe({
         next: (response) => {
           console.log(`Successful Response:`, response);
-          this.sectionForm.reset();
           this.goToSection(this.section?.id.toString() || '');
         },
         error: (error) => {
@@ -68,7 +67,6 @@ export class NewsectionPage implements OnInit {
       this.apiService.post<any>('sections', this.sectionForm.value).subscribe({
         next: (response) => {
           console.log(`Successful Response:`, response);
-          this.sectionForm.reset();
           this.goToSection(response.section_id);
         },
         error: (error) => {
@@ -97,6 +95,8 @@ export class NewsectionPage implements OnInit {
   }
 
   cancel() {
+    this.sectionForm.reset();
+
     if (this.edit) {
       this.goToSection(this.section?.id.toString() || '');
     } else {

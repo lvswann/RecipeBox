@@ -42,7 +42,7 @@
           <div formArrayName="ingredients">
             <ion-item *ngFor="let ingredient of ingredientsArray.controls; let i = index" [formGroupName]="i">
               <ion-input style="margin-right: 10px;" labelPlacement="floating" label="Ingredient" formControlName="name" type="text"></ion-input>
-              <ion-input style="margin-right: 10px;" labelPlacement="floating" label="Amount" formControlName="amount"></ion-input>
+              <ion-input style="margin-right: 10px;" labelPlacement="floating" label="Amount" formControlName="amount" type="number"></ion-input>
               <ion-input labelPlacement="floating" label="Unit" formControlName="amount_unit" type="text"></ion-input>
 
               <ion-button (click)="removeIngredient(i)" style="font-size: 25px" fill="clear">-</ion-button>

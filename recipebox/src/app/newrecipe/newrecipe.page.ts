@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { Recipe, Section, Ingredient, Direction, TimeUnit } from '../interfaces';
@@ -36,16 +36,30 @@ export class NewrecipePage implements OnInit {
   ) {}
 
   ngOnInit() {
+    // maybe use different implementation
+    this._router.events.subscribe(event => {
+      // Check if it's a NavigationEnd event
+      if (event instanceof NavigationEnd) {
+        // Check if the current route matches new recipe
+        if (event.url === '/newrecipe') {
+          // reload
+          this.disableButton = false;
+          this.recipeForm.reset();
+          if (this.ingredientsArray.length !== 0 || this.directionsArray.length !== 0) this.clearIngredientsDirections();
+          this.addIngredient();
+          this.addDirection();
+        }
+      }
+    });
+
+
     this.loadSections();
 
     this.route.params.subscribe(params => {
       const recipe_id = params['id'];
       if (recipe_id) {
         this.edit = true;
-        this.loadRecipe(recipe_id);
-      } else {
-        this.addIngredient();
-        this.addDirection();
+        if (this.ingredientsArray.length === 0 && this.directionsArray.length === 0) this.loadRecipe(recipe_id);
       }
     });
   }
@@ -88,6 +102,11 @@ export class NewrecipePage implements OnInit {
     this.recipe.directions.forEach((direction: Direction)  => {
       directionsArray.push(this.createDirectionFormGroup(direction.description));
     });
+
+    // check if empty
+    if (this.ingredientsArray.length === 0) this.addIngredient();
+    if (this.directionsArray.length === 0) this.addDirection();
+
   }
 
 
@@ -96,12 +115,15 @@ export class NewrecipePage implements OnInit {
 
     console.log('in saveRecipe')
 
+    this.removeEmptyIngredientsDirections();
+
+
     if (!this.sections_exist) {
       this.recipeForm.controls['section_ids'].setValue([]);
     }
 
     if (this.recipeForm.invalid) {
-      console.log('recipeForm is invalid');
+      console.log('recipeForm is invalid', this.recipeForm.value);
       this.disableButton = false;
       return;
     }
@@ -114,7 +136,6 @@ export class NewrecipePage implements OnInit {
       this.apiService.put_with_id<any>('recipes', this.recipe?.id.toString() || '', this.recipeForm.value).subscribe({
         next: (response) => {
           console.log(`Successful Response:`, response);
-          this.recipeForm.reset();
           this.goToRecipe(this.recipe?.id.toString() || '');
         },
         error: (error) => {
@@ -127,7 +148,6 @@ export class NewrecipePage implements OnInit {
       this.apiService.post<any>('recipes', this.recipeForm.value).subscribe({
         next: (response) => {
           console.log(`Successful Response:`, response);
-          this.recipeForm.reset();
           this.goToRecipe(response.recipe_id);
         },
         error: (error) => {
@@ -143,13 +163,6 @@ export class NewrecipePage implements OnInit {
     this.recipeForm.controls['section_ids'].setValue(selected_ids);
   }
 
-  cancel() {
-    if (this.edit) {
-      this.goToRecipe(this.recipe?.id.toString() || '');
-    } else {
-      this.goHome()
-    }
-  }
 
   loadSections() {
     console.log('Loading sections...');
@@ -172,7 +185,7 @@ export class NewrecipePage implements OnInit {
     return this.formBuilder.group({
       name: [name, Validators.required],
       amount: [amount, Validators.required],
-      amount_unit: [amount_unit, Validators.required]
+      amount_unit: [amount_unit]
     });
   }
 
@@ -210,6 +223,57 @@ export class NewrecipePage implements OnInit {
     return this.recipeForm.get('directions') as FormArray;
   }
 
+  clearIngredientsDirections() {
+    while (this.ingredientsArray.length !== 0) {
+      this.removeIngredient(0);
+    }
+
+    while (this.directionsArray.length !== 0) {
+      this.removeDirection(0);
+    }
+  }
+
+  removeEmptyIngredientsDirections() {
+
+    for (let i = 0; i < this.ingredientsArray.length; i++){
+      console.log("ingredient idx:", i)
+      const ingredient = this.ingredientsArray.at(i) as FormGroup;
+      const name = ingredient.get('name')?.value;
+      const amount = ingredient.get('amount')?.value;
+      const amountUnit = ingredient.get('amount_unit')?.value;
+
+      if (!name && !amount && !amountUnit) {
+        this.removeIngredient(i);
+        i -= 1;
+      }
+
+    }
+
+    for (let i = 0; i < this.directionsArray.length; i++){
+      console.log("direction idx:", i)
+
+      const direction = this.directionsArray.at(i) as FormGroup;
+      const description = direction.get('description')?.value;
+
+      if (!description) {
+        this.removeDirection(i);
+        i -= 1;
+      }
+    }
+  }
+
+
+  cancel() {
+    this.disableButton = false;
+    this.recipeForm.reset();
+    if (this.ingredientsArray.length !== 0 || this.directionsArray.length !== 0) this.clearIngredientsDirections();
+
+    if (this.edit) {
+      this.goToRecipe(this.recipe?.id.toString() || '');
+    } else {
+      this.goHome()
+    }
+  }
 
   // navigation
   goHome(){
