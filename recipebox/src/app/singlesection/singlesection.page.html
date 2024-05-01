@@ -24,7 +24,7 @@
     </ion-card-header>
 
     <ion-card-content>
-      <ion-card>
+      <ion-card *ngIf="section.description!=''">
         <ion-card-header>
         <ion-card-title>{{ section.description }}</ion-card-title>
       </ion-card-header>

@@ -5,6 +5,8 @@ import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../services/api.service';
 import { Section } from '../interfaces';
+import { AlertController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-newsection',
@@ -28,6 +30,7 @@ export class NewsectionPage implements OnInit {
     public formBuilder: FormBuilder,
     private authService: AuthService,
     private apiService: ApiService,
+    public alertController: AlertController,
     ) { }
 
   ngOnInit() {
@@ -40,13 +43,25 @@ export class NewsectionPage implements OnInit {
     });
   }
 
+  async presentAlert(msg:string){
+    const alert = await this.alertController.create({
+      header:"Alert",
+      message: msg,
+      buttons: ['OK'],
+    });
 
+    await alert.present();
+  }
 
   saveSection() {
     this.disableButton = true;
 
     if (this.sectionForm.invalid) {
       console.log('sectionForm is invalid');
+      if(this.sectionForm.get('title')?.errors) {
+        console.log("Invalid title");
+        this.presentAlert("Invalid Title")
+      }
       this.disableButton = false;
 
       return;
@@ -66,6 +81,9 @@ export class NewsectionPage implements OnInit {
     } else {
       this.apiService.post<any>('sections', this.sectionForm.value).subscribe({
         next: (response) => {
+          console.log(this.sectionForm.get('title'));
+          console.log(this.sectionForm.get('title')?.errors);
+
           console.log(`Successful Response:`, response);
           this.goToSection(response.section_id);
         },

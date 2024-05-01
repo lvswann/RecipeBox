@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { MenuController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 
 
 // set something to confirm username is entered for registration
@@ -28,6 +29,7 @@ export class LoginPage implements OnInit {
     public formBuilder: FormBuilder,
     private authService: AuthService,
     public menu: MenuController,
+    public alertController: AlertController,
     ) { }
 
   ngOnInit() {
@@ -37,11 +39,23 @@ export class LoginPage implements OnInit {
     this.menu.enable(false);
   }
 
+  async presentAlert(msg:string){
+    const alert = await this.alertController.create({
+      header:"Alert",
+      message: msg,
+      buttons: ['OK'],
+    });
+
+    await alert.present();
+  }
+
   // maybe use one function for login/register
   async login() {
 
     if (this.loginForm.invalid) {
       console.log('loginForm is invalid');
+      this.presentAlert("Login failed. Invalid credentials. ")
+      this.loginForm.reset();
       return;
     }
 
@@ -54,6 +68,8 @@ export class LoginPage implements OnInit {
     } catch (error) {
       // Handle login errors
       console.error("Login failed:", error);
+      this.presentAlert("Login failed. Invalid credentials. ")
+      this.loginForm.reset();
     } finally {
       // is this ever reached??
       this.disableButton = false;
@@ -64,6 +80,7 @@ export class LoginPage implements OnInit {
 
     if (this.loginForm.invalid) {
       console.log('loginForm is invalid');
+      this.presentAlert("Registration failed. Invalid credentials.")
       return;
 
     }

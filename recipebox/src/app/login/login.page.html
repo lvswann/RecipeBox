@@ -36,11 +36,12 @@
             <ion-input labelPlacement="floating" label="Password" formControlName="password" type="password"></ion-input>
           </ion-item>
         </ion-list>
+        
 
         <br>
 
         <!-- Submit button -->
-        <ion-button [disabled]="disableButton" type="submit" >{{ isLogin ? 'Log In' : 'Register' }}</ion-button>
+        <ion-button  [disabled]="disableButton" type="submit" >{{ isLogin ? 'Log In' : 'Register' }}</ion-button>
       </form>
 
       <!-- Toggle button -->

@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ApiService } from '../services/api.service';
 import { Recipe, Section, Ingredient, Direction, TimeUnit } from '../interfaces';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-newrecipe',
@@ -33,6 +34,7 @@ export class NewrecipePage implements OnInit {
     private route: ActivatedRoute,
     public formBuilder: FormBuilder,
     private apiService: ApiService,
+    public alertController: AlertController,
   ) {}
 
   ngOnInit() {
@@ -109,6 +111,15 @@ export class NewrecipePage implements OnInit {
 
   }
 
+  async presentAlert(msg:string){
+    const alert = await this.alertController.create({
+      header:"Alert",
+      message: msg,
+      buttons: ['OK'],
+    });
+
+    await alert.present();
+  }
 
   saveRecipe() {
     this.disableButton = true;
@@ -122,10 +133,34 @@ export class NewrecipePage implements OnInit {
       this.recipeForm.controls['section_ids'].setValue([]);
     }
 
+
     if (this.recipeForm.invalid) {
       console.log('recipeForm is invalid', this.recipeForm.value);
+      if(this.recipeForm.get('title')?.errors) {
+        console.log("Invalid title");
+        this.presentAlert("Invalid Title")
+      }
+      else if (this.recipeForm.get('time')?.errors){
+        this.presentAlert("Invalid Time")
+      }
+      else if (this.recipeForm.get('time_unit')?.errors){
+        this.presentAlert("Invalid Time Unit")
+      }
+
       this.disableButton = false;
       return;
+    }
+
+    if (this.recipeForm.get('ingredients')?.pristine == true){
+      this.presentAlert("Invalid Ingredients")
+      this.disableButton = false;
+      return
+    }
+
+    if (this.recipeForm.get('directions')?.pristine == true){
+      this.presentAlert("Invalid Directions")
+      this.disableButton = false;
+      return
     }
 
     console.log("save recipe recipeForm.value: ", this.recipeForm.value)

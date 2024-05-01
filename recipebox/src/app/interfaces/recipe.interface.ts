@@ -1,8 +1,8 @@
 import { User, Section } from '.';
 
 export enum TimeUnit {
-  MINUTES = 'minutes',
-  HOURS = 'hours'
+  MINUTES = 'Minutes',
+  HOURS = 'Hours'
 }
 
 export interface Recipe {

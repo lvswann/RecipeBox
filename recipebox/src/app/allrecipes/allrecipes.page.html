@@ -16,7 +16,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-card>
+  <ion-card color="secondary">
     <ion-card-header class="header"  color="primary">
       <ion-card-title class="ion-text-center">All Recipes</ion-card-title>
 
@@ -25,6 +25,7 @@
 
     <ion-card-content>
       <!-- Sorting -->
+      <ion-card>
       <ion-item>
         <ion-select [(ngModel)]="selectedSortingOption" interface="popover" (ionChange)="sortRecipes()" label="Sort By:" label-placement="floating">
           <ion-select-option value="alphabetAsc">Alphabetical (A-Z)</ion-select-option>
@@ -35,8 +36,9 @@
           <ion-select-option value="timeToMakeDesc">Time to Make (Longest first)</ion-select-option>
         </ion-select>
       </ion-item>
+    </ion-card> 
       
-      <br>
+      <ion-card>
 
       <ion-list class="recipe-list">
         <ion-item *ngFor="let recipe of sortedRecipes" button (click)="goToRecipe(recipe.id.toString())">
@@ -44,6 +46,7 @@
           <ion-label class="ion-text-right">Time: {{recipe.time}} {{recipe.time_unit}}</ion-label>
         </ion-item>
       </ion-list>
+    </ion-card>
     </ion-card-content>
   </ion-card>
 
