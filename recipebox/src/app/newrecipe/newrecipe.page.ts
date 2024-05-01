@@ -126,7 +126,7 @@ export class NewrecipePage implements OnInit {
 
     console.log('in saveRecipe')
 
-    this.removeEmptyIngredientsDirections();
+    let[total_ing, total_dir] = this.removeEmptyIngredientsDirections();
 
 
     if (!this.sections_exist) {
@@ -146,21 +146,15 @@ export class NewrecipePage implements OnInit {
       else if (this.recipeForm.get('time_unit')?.errors){
         this.presentAlert("Invalid Time Unit")
       }
+      else if (total_ing === 0){
+        this.presentAlert("Invalid Ingredients")
+      }
+      else if (total_dir === 0){
+        this.presentAlert("Invalid Directions")
+      }
 
       this.disableButton = false;
       return;
-    }
-
-    if (this.recipeForm.get('ingredients')?.pristine == true){
-      this.presentAlert("Invalid Ingredients")
-      this.disableButton = false;
-      return
-    }
-
-    if (this.recipeForm.get('directions')?.pristine == true){
-      this.presentAlert("Invalid Directions")
-      this.disableButton = false;
-      return
     }
 
     console.log("save recipe recipeForm.value: ", this.recipeForm.value)
@@ -268,7 +262,10 @@ export class NewrecipePage implements OnInit {
     }
   }
 
-  removeEmptyIngredientsDirections() {
+  removeEmptyIngredientsDirections(): [number, number] {
+
+    var total_ing = 0;
+    var total_dir = 0;
 
     for (let i = 0; i < this.ingredientsArray.length; i++){
       console.log("ingredient idx:", i)
@@ -277,11 +274,11 @@ export class NewrecipePage implements OnInit {
       const amount = ingredient.get('amount')?.value;
       const amountUnit = ingredient.get('amount_unit')?.value;
 
-      if (!name && !amount && !amountUnit) {
+      if (!name && !amount && !amountUnit && i!=0) {
         this.removeIngredient(i);
         i -= 1;
       }
-
+      total_ing = i;
     }
 
     for (let i = 0; i < this.directionsArray.length; i++){
@@ -290,11 +287,15 @@ export class NewrecipePage implements OnInit {
       const direction = this.directionsArray.at(i) as FormGroup;
       const description = direction.get('description')?.value;
 
-      if (!description) {
+      if (!description && i!=0) {
         this.removeDirection(i);
         i -= 1;
       }
+      total_dir = i;
     }
+
+    return[total_ing, total_dir]
+
   }
 
 

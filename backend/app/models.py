@@ -7,8 +7,8 @@ from datetime import datetime, timezone
 
 ## Set predefined values
 class TimeUnit(Enum):
-    MINUTES = 'minutes'
-    HOURS = 'hours'
+    MINUTES = 'Minutes'
+    HOURS = 'Hours'
 
 
 
