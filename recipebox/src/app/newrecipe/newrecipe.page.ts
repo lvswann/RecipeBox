@@ -129,9 +129,12 @@ export class NewrecipePage implements OnInit {
     this.removeEmptyIngredientsDirections();
 
 
-    if (!this.sections_exist) {
+    if (!this.sections_exist || this.recipeForm.controls['section_ids'].value.length === 0) {
       this.recipeForm.controls['section_ids'].setValue([]);
     }
+
+    console.log("current form:", this.recipeForm.value)
+
 
 
     if (this.recipeForm.invalid) {
@@ -216,7 +219,7 @@ export class NewrecipePage implements OnInit {
   }
 
 
-  createIngredientFormGroup(name: string = '', amount: number | null = null, amount_unit: string = ''): FormGroup {
+  createIngredientFormGroup(name: string = '', amount: number | null = null, amount_unit: string | null = null): FormGroup {
     return this.formBuilder.group({
       name: [name, Validators.required],
       amount: [amount, Validators.required],
@@ -226,7 +229,7 @@ export class NewrecipePage implements OnInit {
 
   createDirectionFormGroup(description: string = ''): FormGroup {
     return this.formBuilder.group({
-      description: [description, Validators.required]
+      description: [description]
     });
   }
 
