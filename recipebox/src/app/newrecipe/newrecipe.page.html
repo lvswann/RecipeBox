@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-searchbar class="search" enterkeyhint="search"></ion-searchbar>
+    <ion-searchbar [(ngModel)]="searchQuery" class="search" enterkeyhint="search" debounce="1000" (ionChange)="ionChange($event)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 

@@ -12,7 +12,8 @@ export class AppComponent {
 
     {title: "Add New Recipe", url:"newrecipe", icon: "fast-food"},
     {title: "Add New Section", url:"newsection", icon: "file-tray-full"},
-    {title: 'All Recipes', url:'allrecipes', icon: 'list'}
+    {title: 'All Recipes', url:'allrecipes', icon: 'list'},
+    {title: 'Settings', url:'useraccount', icon: 'cog'}
   ];
 
   constructor(private _router: Router) { }

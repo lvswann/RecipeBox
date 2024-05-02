@@ -19,6 +19,8 @@ export class NewrecipePage implements OnInit {
   recipe: Recipe | null = null;
   timeUnits: string[] = Object.values(TimeUnit);
 
+  searchQuery: string = '';
+
   recipeForm: FormGroup = this.formBuilder.group({
     title: ['', [Validators.required]],
     time: ['', [Validators.required]],
@@ -64,6 +66,12 @@ export class NewrecipePage implements OnInit {
         if (this.ingredientsArray.length === 0 && this.directionsArray.length === 0) this.loadRecipe(recipe_id);
       }
     });
+  }
+
+  ionChange(event: any) {
+    console.log("search event: ", event.detail.value)
+    this.searchQuery = '';
+    this._router.navigate(['/search', event.detail.value])
   }
 
   loadRecipe(recipe_id: string) {

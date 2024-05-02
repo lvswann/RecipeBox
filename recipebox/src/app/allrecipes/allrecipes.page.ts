@@ -13,6 +13,8 @@ export class AllrecipesPage implements OnInit {
   sortedRecipes: Recipe[] = [];
   selectedSortingOption: string = 'dateCreatedDesc';
 
+  searchQuery: string = '';
+
   constructor(
     private _router: Router,
     private apiService: ApiService,
@@ -33,6 +35,11 @@ export class AllrecipesPage implements OnInit {
     });
   }
 
+  ionChange(event: any) {
+    console.log("search event: ", event.detail.value)
+    this.searchQuery = '';
+    this._router.navigate(['/search', event.detail.value])
+  }
 
   loadRecipes() {
     console.log('Loading recipes...');

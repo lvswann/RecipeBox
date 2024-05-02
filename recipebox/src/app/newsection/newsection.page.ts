@@ -18,6 +18,8 @@ export class NewsectionPage implements OnInit {
   edit: boolean = false;
   section: Section | null = null;;
 
+  searchQuery: string = '';
+
   sectionForm: FormGroup = this.formBuilder.group({
     title: ['', [Validators.required]],
     description: [''],
@@ -41,6 +43,12 @@ export class NewsectionPage implements OnInit {
         this.loadSection(section_id);
       }
     });
+  }
+
+  ionChange(event: any) {
+    console.log("search event: ", event.detail.value)
+    this.searchQuery = '';
+    this._router.navigate(['/search', event.detail.value])
   }
 
   async presentAlert(msg:string){

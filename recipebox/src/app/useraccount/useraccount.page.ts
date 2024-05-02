@@ -16,6 +16,8 @@ export class UseraccountPage implements OnInit {
   username: any;
   email: any;
 
+  searchQuery: string = '';
+
   constructor(
     private http: HttpClient,
     private _router: Router,
@@ -28,8 +30,13 @@ export class UseraccountPage implements OnInit {
 
   ngOnInit() {
     this.loadUserInfo()
-  }
+  } 
 
+  ionChange(event: any) {
+    console.log("search event: ", event.detail.value)
+    this.searchQuery = '';
+    this._router.navigate(['/search', event.detail.value])
+  }
 
   loadUserInfo() {
     this.apiService.get_all<{ user: User }>('useraccount').subscribe({
