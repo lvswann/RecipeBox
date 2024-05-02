@@ -13,6 +13,8 @@ import { Section, Recipe } from '../interfaces';
 export class SinglesectionPage implements OnInit {
   section: any;
   recipes: any[];
+  
+  searchQuery: string = '';
 
   constructor(
     private http: HttpClient,
@@ -31,6 +33,12 @@ export class SinglesectionPage implements OnInit {
       this.loadSection(section_id);
       this.loadSectionRecipes(section_id);
     })
+  }
+
+  ionChange(event: any) {
+    console.log("search event: ", event.detail.value)
+    this.searchQuery = '';
+    this._router.navigate(['/search', event.detail.value])
   }
 
   loadSection(section_id: string) {

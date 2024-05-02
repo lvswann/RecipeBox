@@ -11,6 +11,8 @@ import { Recipe } from '../interfaces';
 export class SinglerecipePage implements OnInit {
   recipe: Recipe | null = null;
 
+  searchQuery: string = '';
+
   constructor(
     private route: ActivatedRoute,
     private _router: Router,
@@ -22,6 +24,12 @@ export class SinglerecipePage implements OnInit {
       const recipe_id = params['id'];
       this.loadRecipe(recipe_id);
     })
+  }
+
+  ionChange(event: any) {
+    console.log("search event: ", event.detail.value)
+    this.searchQuery = '';
+    this._router.navigate(['/search', event.detail.value])
   }
 
   loadRecipe(recipe_id: string) {
