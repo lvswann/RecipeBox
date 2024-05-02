@@ -91,11 +91,13 @@ export class LoginPage implements OnInit {
       await this.authService.register(this.loginForm.value);
       this.loginForm.reset();
 
-    } catch (error) {
+    } catch (error: any) {
       // Handle login errors
       console.error("Registration failed:", error);
+      if (error.status === 400 && error.error.error === 'Email already exists') {
+        this.presentAlert("Email already exists");
+      }
     } finally {
-      // is this ever reached??
       this.disableButton = false;
     }
   }

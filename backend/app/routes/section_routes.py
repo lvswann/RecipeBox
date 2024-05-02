@@ -33,6 +33,12 @@ def create_section():
     data = request.json
     print("Received data:", data)
 
+    # Check if the section title already exists for the user
+    existing_title = Section.query.filter_by(title=data['title'], user_id=db_user.id).first()
+    if existing_title:
+        return jsonify({'error': 'Section title already exists'}), 400
+
+
     new_section = Section(
         title=data['title'],
         description=data['description'],
@@ -169,6 +175,13 @@ def edit_section(section_id):
 
 
     data = request.json
+
+    # Check if the section title already exists for the user
+    existing_title = Section.query.filter_by(title=data['title'], user_id=db_user.id).first()
+    if existing_title:
+        return jsonify({'error': 'Section title already exists'}), 400
+
+
     section.title = data['title']
     section.description = data['description']
 

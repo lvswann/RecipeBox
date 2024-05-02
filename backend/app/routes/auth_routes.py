@@ -22,7 +22,7 @@ def register_user():
     user_exists = User.query.filter_by(email=data['email']).first()
 
     if user_exists:
-        return jsonify({'message': 'User already exists'}), 409
+        return jsonify({'error': 'Email already exists'}), 400
 
     hashed_pass = generate_password_hash(data['password'], method='pbkdf2:sha256')
 
@@ -49,6 +49,10 @@ def login_user():
     if user and check_password_hash(user.password_hash, data['password']):
         access_token = create_access_token(identity=user.public_id)
         refresh_token = create_refresh_token(identity=user.public_id)
+
+        user.refresh_token = refresh_token
+        db.session.commit()
+
     else:
         return jsonify({'message': 'Login Failed'}), 401
 
@@ -61,20 +65,19 @@ def login_user():
 
 @bp.route('/auth/refresh/', methods=['POST'])
 @cross_origin()
-@jwt_required()
 def refresh_token():
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(public_id=current_user).first()
     data = request.json
+    refresh_token = data['refresh_token']
+    user = User.query.filter_by(refresh_token=refresh_token).first()
 
     if not user:
         return jsonify({'message': 'User not found'}), 404
 
-    jti = get_jti(data['refresh_token'])
+    jti = get_jti(refresh_token)
     if RefreshTokenBlocklist.query.filter_by(jti=jti).first():
         return jsonify({'message': 'Invalid refresh token'}), 401
 
-    access_token = create_access_token(identity=current_user)
+    access_token = create_access_token(identity=user.public_id)
     return jsonify({'message': 'Token refresh successful', 'access_token': access_token}), 200
 
 
@@ -83,6 +86,15 @@ def refresh_token():
 @jwt_required()
 def logout():
     data = request.json
+
+    current_user = get_jwt_identity()
+    user = User.query.filter_by(public_id=current_user).first()
+
+    if not user:
+        return jsonify({'message': 'User not found'}), 404
+
+    user.refresh_token = None
+
     jti = get_jti(data['refresh_token'])
 
     current_time = datetime.now(timezone.utc)

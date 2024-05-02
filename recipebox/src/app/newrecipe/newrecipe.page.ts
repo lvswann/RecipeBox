@@ -128,13 +128,11 @@ export class NewrecipePage implements OnInit {
 
     let[total_ing, total_dir] = this.removeEmptyIngredientsDirections();
 
-
-    if (!this.sections_exist || this.recipeForm.controls['section_ids'].value.length === 0) {
+    if (!this.sections_exist || this.recipeForm.controls['section_ids'].value === null) {
       this.recipeForm.controls['section_ids'].setValue([]);
     }
 
     console.log("current form:", this.recipeForm.value)
-
 
 
     if (this.recipeForm.invalid) {
@@ -172,6 +170,10 @@ export class NewrecipePage implements OnInit {
         },
         error: (error) => {
           console.error('unsuccessful', error);
+          if (error.status === 400 && error.error.error === 'Recipe title already exists') {
+            this.presentAlert("Recipe title already exists");
+          }
+          this.disableButton = false;
         },
         complete: () => {}
       });
@@ -184,6 +186,11 @@ export class NewrecipePage implements OnInit {
         },
         error: (error) => {
           console.error('unsuccessful', error);
+          if (error.status === 400 && error.error.error === 'Recipe title already exists') {
+            this.presentAlert("Recipe title already exists");
+          }
+          this.disableButton = false;
+
         },
         complete: () => {}
       });

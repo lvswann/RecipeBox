@@ -28,6 +28,8 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(100), unique=False, nullable=False)
     email = db.Column(db.String(40), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
+    refresh_token = db.Column(db.String(500), unique=True, nullable=True)
+
 
     recipes = db.relationship('Recipe', back_populates='user', lazy=True)
     sections = db.relationship('Section', back_populates='user', lazy=True)
@@ -123,7 +125,7 @@ class Ingredient(db.Model):
     
 class Direction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(1000), nullable=False)
     
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
     recipe = db.relationship('Recipe', back_populates='directions')
@@ -136,7 +138,7 @@ class Section(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
     ###### not sure how long to make description
-    description = db.Column(db.String(150))
+    description = db.Column(db.String(1000))
     date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     
     # OR

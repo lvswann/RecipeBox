@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
@@ -34,6 +34,19 @@ export class NewsectionPage implements OnInit {
     ) { }
 
   ngOnInit() {
+    // maybe use different implementation
+    this._router.events.subscribe(event => {
+      // Check if it's a NavigationEnd event
+      if (event instanceof NavigationEnd) {
+        // Check if the current route matches new section
+        if (event.url === '/newsection') {
+          // reload
+          this.disableButton = false;
+          this.sectionForm.reset();
+        }
+      }
+    });
+
     this.route.params.subscribe(params => {
       const section_id = params['id'];
       if (section_id) {
@@ -56,6 +69,7 @@ export class NewsectionPage implements OnInit {
   saveSection() {
     this.disableButton = true;
 
+
     if (this.sectionForm.invalid) {
       console.log('sectionForm is invalid');
       if(this.sectionForm.get('title')?.errors) {
@@ -75,6 +89,10 @@ export class NewsectionPage implements OnInit {
         },
         error: (error) => {
           console.error('unsuccessful', error);
+          if (error.status === 400 && error.error.error === 'Section title already exists') {
+            this.presentAlert("Section title already exists");
+          }
+          this.disableButton = false;
         },
         complete: () => {}
       });
@@ -89,6 +107,10 @@ export class NewsectionPage implements OnInit {
         },
         error: (error) => {
           console.error('unsuccessful', error);
+          if (error.status === 400 && error.error.error === 'Section title already exists') {
+            this.presentAlert("Section title already exists");
+          }
+          this.disableButton = false;
         },
         complete: () => {}
       });
@@ -113,6 +135,7 @@ export class NewsectionPage implements OnInit {
   }
 
   cancel() {
+    this.disableButton = false;
     this.sectionForm.reset();
 
     if (this.edit) {
