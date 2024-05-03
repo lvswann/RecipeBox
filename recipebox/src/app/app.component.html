@@ -1,13 +1,15 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
-  <ion-menu contentId="main-content" type="overlay">
+  <ion-menu style="max-width: 300px;" contentId="main-content" type="overlay">
       <!-- <ion-toolbar>
-        <img class="menu-logo-margin" button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />  
+        <img class="menu-logo-margin" button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
       </ion-toolbar> -->
     <ion-content >
-      <ion-list id="nav-list">
+      <ion-list id="nav-list" style="margin: 0 0 0 20px">
+      <!-- style="display: flex;flex-direction: column;align-items: center;margin: 0;padding: 0;"> -->
+
         <!-- <img class="menu-logo-margin" button (click)="goHome()" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />   -->
-        <img button (click)="goHome()" class="menu-logo-margin" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />  
+        <!-- <img button (click)="goHome()" class="menu-logo-margin" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" /> -->
 
         <!-- <br>
         <br>
@@ -17,17 +19,20 @@
 
         <br> -->
 
-        <ion-menu-toggle autoHide="false" *ngFor="let p of appPages; let i = index">
-          <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
-            <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'" color="primary"></ion-icon> 
-            <ion-label>{{ p.title }}</ion-label>
-          </ion-item>
+        <ion-menu-toggle autoHide="false">
+          <img button (click)="goHome()" class="menu-logo-margin" alt="logo" style="width:180px;height:100px;" src="assets/icon/recipieboxlogolong.png" />
+          <ion-list *ngFor="let p of appPages; let i = index">
+            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+              <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'" color="primary"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </ion-list>
         </ion-menu-toggle>
       </ion-list>
     </ion-content>
 
     <!-- <ion-footer>
-      <ion-button class="account-margin" button fill="clear" (click)="goToAccount()">Account</ion-button> 
+      <ion-button class="account-margin" button fill="clear" (click)="goToAccount()">Account</ion-button>
 
     </ion-footer> -->
   </ion-menu>
