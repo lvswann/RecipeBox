@@ -236,7 +236,7 @@ def edit_recipe(recipe_id):
 
    # Check if the recipe title already exists for the user
     existing_title = Recipe.query.filter_by(title=data['title'], user_id=user.id).first()
-    if existing_title:
+    if data['title'] != recipe.title and existing_title:
         return jsonify({'error': 'Recipe title already exists'}), 400
 
 

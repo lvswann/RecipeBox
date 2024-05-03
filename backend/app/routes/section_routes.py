@@ -177,8 +177,8 @@ def edit_section(section_id):
     data = request.json
 
     # Check if the section title already exists for the user
-    existing_title = Section.query.filter_by(title=data['title'], user_id=db_user.id).first()
-    if existing_title:
+    existing_title = Section.query.filter_by(title=data['title'], user_id=user.id).first()
+    if data['title'] != section.title and existing_title:
         return jsonify({'error': 'Section title already exists'}), 400
 
 
