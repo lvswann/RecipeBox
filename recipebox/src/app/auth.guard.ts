@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of, from } from 'rxjs';
 import { AuthService } from './auth/auth.service';
-import { tap } from 'rxjs/operators';
+import { tap, catchError, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-
-// should go back to using CanActivateFn since CanActivate is deprecated
 
 export class AuthGuard implements CanActivate {
 
@@ -16,11 +14,30 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): Observable<boolean> {
     return this.authService.isAuthenticated().pipe(
-      tap(authenticated => {
-        if (!authenticated) {
-          // If not authenticated, navigate to the login page
-          this.router.navigate(['/login']);
+      switchMap(authenticated => {
+        if (authenticated) {
+          // If authenticated, return observable of true
+          return of(true);
+        } else {
+          // If not authenticated, attempt token refresh
+          return from(this.authService.refreshToken()).pipe(
+            switchMap(() => {
+              // If refresh successful, return observable of true
+              return of(true);
+            }),
+            catchError(() => {
+              // If refresh fails, navigate to login page and return observable of false
+              this.router.navigate(['/login']);
+              return of(false);
+            })
+          );
         }
+      }),
+      catchError(error => {
+        // Handle errors such as network issues or server errors
+        console.error('Error in canActivate:', error);
+        this.router.navigate(['/login']);
+        return of(false); // Return observable of false if an error occurs
       })
     );
   }

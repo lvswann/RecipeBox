@@ -51,6 +51,10 @@ export class AuthService {
     );
   }
 
+  public isTokenExpired(token: string): boolean {
+    return this.jwtHelper.isTokenExpired(token);
+  }
+
   public async login(credentials:any): Promise<any> {
     try {
       const response = await lastValueFrom(this.http.post<any>(`${this.api_url}/auth/login/`, credentials, this.httpHeaderNoAuth));

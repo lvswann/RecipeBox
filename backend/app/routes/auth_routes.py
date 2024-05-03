@@ -74,7 +74,7 @@ def refresh_token():
         return jsonify({'message': 'User not found'}), 404
 
     jti = get_jti(refresh_token)
-    if RefreshTokenBlocklist.query.filter_by(jti=jti).first():
+    if RefreshTokenBlocklist.query.filter_by(refresh_token=jti).first():
         return jsonify({'message': 'Invalid refresh token'}), 401
 
     access_token = create_access_token(identity=user.public_id)
